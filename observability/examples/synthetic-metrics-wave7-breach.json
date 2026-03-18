@@ -1,0 +1,8 @@
+{
+  "partner_adapter_5xx_ratio": 0.08,
+  "partner_adapter_normalize_p95_seconds": 1.75,
+  "partner_adapter_governance_handoff_error_ratio": 0.06,
+  "partner_adapter_tenant_scope_reject_ratio": 0.04,
+  "partner_adapter_command_intent_rps": 8,
+  "partner_adapter_overload_reject_ratio": 0.09
+}

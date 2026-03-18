@@ -1,0 +1,35 @@
+version: 1
+owner: platform-foundation
+purpose: Canonical mapping between W7 partner adapter SLO indicators and runtime metric names
+
+mappings:
+  partner_adapter_error_ratio:
+    service: partner-integration-layer
+    slo_indicator: http_availability
+    numerator_metric: http_requests_total{service="partner-integration-layer",status=~"5.."}
+    denominator_metric: http_requests_total{service="partner-integration-layer"}
+
+  partner_adapter_normalize_latency_p95:
+    service: partner-integration-layer
+    slo_indicator: normalize_latency_p95_seconds
+    metric_histogram_bucket: partner_adapter_normalize_seconds_bucket
+
+  partner_adapter_governance_handoff_error_ratio:
+    service: partner-integration-layer
+    slo_indicator: governance_handoff_error_ratio
+    metric: partner_adapter_governance_handoff_error_ratio
+
+  partner_adapter_tenant_scope_reject_ratio:
+    service: partner-integration-layer
+    slo_indicator: tenant_scope_reject_ratio
+    metric: partner_adapter_tenant_scope_reject_ratio
+
+  partner_adapter_command_intent_rps:
+    service: partner-integration-layer
+    slo_indicator: command_intent_throughput_rps
+    metric: partner_adapter_command_intent_rps
+
+  partner_adapter_overload_reject_ratio:
+    service: partner-integration-layer
+    slo_indicator: overload_reject_ratio
+    metric: partner_adapter_overload_reject_ratio

@@ -1,0 +1,72 @@
+groups:
+  - name: wave7-partner-adapter-alerts
+    interval: 30s
+    rules:
+      - alert: PartnerAdapterHighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{service="partner-integration-layer",status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(http_requests_total{service="partner-integration-layer"}[5m])), 1)) > 0.02
+        for: 10m
+        labels:
+          severity: page
+          service: partner-integration-layer
+          wave: "7"
+        annotations:
+          summary: "partner-integration-layer 5xx ratio > 2%"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: PartnerAdapterNormalizeLatencyHigh
+        expr: histogram_quantile(0.95, sum(rate(partner_adapter_normalize_seconds_bucket[5m])) by (le)) > 1
+        for: 10m
+        labels:
+          severity: warn
+          service: partner-integration-layer
+          wave: "7"
+        annotations:
+          summary: "partner adapter normalize p95 latency > 1s"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: PartnerAdapterGovernanceHandoffErrorRatioHigh
+        expr: partner_adapter_governance_handoff_error_ratio > 0.01
+        for: 10m
+        labels:
+          severity: page
+          service: partner-integration-layer
+          wave: "7"
+        annotations:
+          summary: "partner adapter governance handoff error ratio > 1%"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: PartnerAdapterTenantScopeRejectRatioHigh
+        expr: partner_adapter_tenant_scope_reject_ratio > 0.01
+        for: 15m
+        labels:
+          severity: warn
+          service: partner-integration-layer
+          wave: "7"
+        annotations:
+          summary: "partner adapter tenant scope reject ratio > 1%"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: PartnerAdapterCommandIntentThroughputLow
+        expr: partner_adapter_command_intent_rps < 20
+        for: 10m
+        labels:
+          severity: warn
+          service: partner-integration-layer
+          wave: "7"
+        annotations:
+          summary: "partner adapter command-intent throughput below 20 rps baseline"
+          runbook: "docs/runbooks/performance-scale-hardening.md"
+
+      - alert: PartnerAdapterOverloadRejectRatioHigh
+        expr: partner_adapter_overload_reject_ratio > 0.02
+        for: 10m
+        labels:
+          severity: page
+          service: partner-integration-layer
+          wave: "7"
+        annotations:
+          summary: "partner adapter overload reject ratio > 2%"
+          runbook: "docs/runbooks/performance-scale-hardening.md"

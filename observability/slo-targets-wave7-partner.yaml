@@ -1,0 +1,40 @@
+version: 1
+owner: platform-foundation
+scope: wave7-partner-adapter
+
+slos:
+  - id: partner_adapter_api_availability
+    service: partner-integration-layer
+    indicator: http_availability
+    target: 99.9
+    window: 30d
+
+  - id: partner_adapter_normalize_latency_p95
+    service: partner-integration-layer
+    indicator: normalize_latency_p95_seconds
+    target: 1.0
+    window: 5m
+
+  - id: partner_adapter_governance_handoff_error_ratio
+    service: partner-integration-layer
+    indicator: governance_handoff_error_ratio
+    target: 0.01
+    window: 15m
+
+  - id: partner_adapter_tenant_scope_reject_ratio
+    service: partner-integration-layer
+    indicator: tenant_scope_reject_ratio
+    target: 0.01
+    window: 15m
+
+  - id: partner_adapter_command_intent_throughput_rps
+    service: partner-integration-layer
+    indicator: command_intent_throughput_rps
+    target: 20
+    window: 10m
+
+  - id: partner_adapter_overload_reject_ratio
+    service: partner-integration-layer
+    indicator: overload_reject_ratio
+    target: 0.02
+    window: 10m

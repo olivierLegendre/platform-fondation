@@ -1,0 +1,44 @@
+{
+  "report": "wave7_partner_scale_baseline",
+  "generated_at_utc": "2026-03-18T12:31:25+00:00",
+  "profile": "baseline-standard-15s",
+  "notes": "Local uvicorn baseline run. In stub mode, governance handoff is simulated. In real mode, handoff uses live channel-policy-router.",
+  "targets_reference": {
+    "normalize_p95_ms_le": 250,
+    "command_p95_ms_le": 400,
+    "error_rate_percent_lt": 1.0
+  },
+  "scenarios": [
+    {
+      "name": "normalize_telemetry",
+      "path": "/api/v1/partners/schneider-bacnet/telemetry/normalize",
+      "duration_seconds": 15,
+      "requests_per_second": 100,
+      "total_requests": 1500,
+      "successes": 1500,
+      "failures": 0,
+      "error_rate_percent": 0.0,
+      "p95_latency_ms": 1.3065,
+      "average_latency_ms": 0.9652
+    },
+    {
+      "name": "command_intent",
+      "path": "/api/v1/partners/schneider-bacnet/commands/intent",
+      "duration_seconds": 15,
+      "requests_per_second": 40,
+      "total_requests": 600,
+      "successes": 600,
+      "failures": 0,
+      "error_rate_percent": 0.0,
+      "p95_latency_ms": 2.7557,
+      "average_latency_ms": 1.1889
+    }
+  ],
+  "checks": {
+    "normalize_p95_ms_le_250": true,
+    "command_p95_ms_le_400": true,
+    "normalize_error_rate_lt_1_percent": true,
+    "command_error_rate_lt_1_percent": true
+  },
+  "result": "PASS"
+}

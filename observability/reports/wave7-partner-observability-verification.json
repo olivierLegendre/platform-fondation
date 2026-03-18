@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "finding_count": 0,
+  "findings": [],
+  "checked": {
+    "mapping": "observability/metric-name-mapping-wave7-partner.yaml",
+    "rules": "observability/prometheus/rules/wave7-partner-adapter-alerts.yaml",
+    "routing": "observability/alertmanager/wave7-alert-routing.yaml",
+    "healthy": "observability/examples/synthetic-metrics-wave7-healthy.json",
+    "breach": "observability/examples/synthetic-metrics-wave7-breach.json"
+  }
+}

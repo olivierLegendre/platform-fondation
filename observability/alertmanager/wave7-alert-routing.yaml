@@ -1,0 +1,18 @@
+route:
+  receiver: wave7-warn
+  routes:
+    - matchers:
+        - severity="page"
+      receiver: wave7-pager
+    - matchers:
+        - severity="warn"
+      receiver: wave7-warn
+
+receivers:
+  - name: wave7-pager
+    webhook_configs:
+      - url: https://example.invalid/wave7-pager
+
+  - name: wave7-warn
+    webhook_configs:
+      - url: https://example.invalid/wave7-warn
