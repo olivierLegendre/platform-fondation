@@ -18,6 +18,8 @@ Current status:
 - `scripts/publish_service_images_to_ghcr.sh`
 - `scripts/verify_ghcr_images_pullable.sh`
 - `scripts/run_ghcr_publish_proof.sh`
+- `scripts/run_wave1_vault_runtime_baseline.sh`
+- `scripts/run_wave1_observability_baseline.sh`
 - `scripts/run_wave8_namespace_readiness.sh`
 - `scripts/evaluate_wave8_namespace_readiness.py`
 
@@ -104,3 +106,32 @@ Optional local mode (skip pullability until migrated images/permissions are avai
 cd /home/olivier/work/iot_services/platform-foundation
 SKIP_PULLABILITY=true ./deploy/production/scripts/run_wave8_namespace_readiness.sh
 ```
+
+## Wave 1 Vault Runtime Baseline
+
+Purpose: execute the non-dev runtime secret baseline proof for Wave 1 (`render -> validate -> report`).
+
+Runner:
+
+```bash
+cd /home/olivier/work/iot_services/platform-foundation
+./deploy/production/scripts/run_wave1_vault_runtime_baseline.sh
+```
+
+Output report:
+- `vault/reports/w1-vault-runtime-baseline-report.json`
+
+## Wave 1 Observability Baseline
+
+Purpose: execute the Wave 1 observability baseline proof (wiring verification + synthetic healthy/breach behavior checks).
+
+Runner:
+
+```bash
+cd /home/olivier/work/iot_services/platform-foundation
+./deploy/production/scripts/run_wave1_observability_baseline.sh
+```
+
+Output reports:
+- `observability/reports/w1-observability-wiring-verification.json`
+- `observability/reports/w1-observability-baseline-report.json`

@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "finding_count": 0,
+  "findings": [],
+  "generated_at": "2026-03-18T14:18:23.783106+00:00",
+  "checks": {
+    "wiring_verification": {
+      "status": "PASS",
+      "report": "observability/reports/w1-observability-wiring-verification.json",
+      "output_tail": "verification=PASS findings=0"
+    },
+    "synthetic_healthy": {
+      "status": "PASS",
+      "output_tail": "synthetic alert checks: PASSED"
+    },
+    "synthetic_breach_expected_fail": {
+      "status": "PASS",
+      "output_tail": "synthetic alert checks: FAILED\n - device_ingestion_5xx_ratio=0.05 exceeds threshold 0.02\n - reference_api_5xx_ratio=0.03 exceeds threshold 0.02\n - channel_policy_router_queue_depth=340 exceeds threshold 200\n - channel_policy_router_reconciliation_sla_breach_ratio=0.08 exceeds threshold 0.01\n - automation_workflow_start_p95_seconds=7.2 exceeds threshold 5.0"
+    }
+  }
+}

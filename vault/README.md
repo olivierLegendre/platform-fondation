@@ -1,6 +1,6 @@
-# Vault Bootstrap Baseline (W6-07)
+# Vault Runtime Secrets Baseline (Wave 1 + W6-07)
 
-This folder defines the runtime secret contract and bootstrap checks for Wave 6.
+This folder defines the runtime secret contract and bootstrap checks used for the Wave 1 foundation/security baseline and reused by later waves.
 
 ## Why Vault Is Used Here
 
@@ -56,7 +56,22 @@ The secret names and required keys are defined in `secrets-contract.yaml`.
 - `examples/vault-export.example.json`: non-secret payload shape example.
 - `scripts/render_runtime_env.py`: renders service `.env` files from Vault-exported JSON.
 - `scripts/validate_runtime_env.py`: validates rendered env files for non-dev policy.
+- `scripts/evaluate_wave1_vault_runtime_baseline.py`: writes Wave 1 evidence report (`PASS`/`FAIL`).
 - `examples/docker-compose.secrets.override.yaml`: example runtime wiring via `env_file`.
+- `reports/w1-vault-runtime-baseline-report.json`: Wave 1 runtime baseline evidence artifact.
+
+## Wave 1 One-Command Baseline Proof
+
+Run from `platform-foundation`:
+
+```bash
+./deploy/production/scripts/run_wave1_vault_runtime_baseline.sh
+```
+
+Default behavior:
+1. Renders service env files from `vault/examples/vault-export.example.json`.
+2. Validates non-dev secret policy.
+3. Produces evidence report at `vault/reports/w1-vault-runtime-baseline-report.json`.
 
 ## Usage
 

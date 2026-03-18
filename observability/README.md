@@ -30,6 +30,8 @@ Wave 7 extension (partner adapter baseline):
 - `examples/synthetic-metrics-wave7-breach.json`: synthetic breach partner metrics payload.
 - `scripts/verify_wave7_partner_observability.py`: Wave 7 partner observability wiring verifier.
 - `reports/wave7-partner-observability-verification.json`: latest Wave 7 partner verification report.
+- `reports/w1-observability-wiring-verification.json`: Wave 1 wiring verification artifact.
+- `reports/w1-observability-baseline-report.json`: Wave 1 consolidated observability baseline report.
 
 ## Synthetic Check Usage
 
@@ -81,4 +83,11 @@ python3 observability/scripts/verify_wave7_partner_observability.py \
   --healthy observability/examples/synthetic-metrics-wave7-healthy.json \
   --breach observability/examples/synthetic-metrics-wave7-breach.json \
   --out observability/reports/wave7-partner-observability-verification.json
+```
+
+Wave 1 baseline proof (recommended one-command runner):
+
+```bash
+cd /home/olivier/work/iot_services/platform-foundation
+./deploy/production/scripts/run_wave1_observability_baseline.sh
 ```

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "finding_count": 0,
+  "findings": [],
+  "services": {
+    "automation-scenario-service": {
+      "env_file": "/tmp/iot-wave1-secrets/automation-scenario-service.env",
+      "present": true,
+      "required_keys": [
+        "AUTH_JWT_SECRET",
+        "AUTH_JWT_ISSUER",
+        "AUTH_JWT_AUDIENCE"
+      ],
+      "missing_keys": []
+    },
+    "channel-policy-router": {
+      "env_file": "/tmp/iot-wave1-secrets/channel-policy-router.env",
+      "present": true,
+      "required_keys": [
+        "AUTH_JWT_SECRET",
+        "AUTH_JWT_ISSUER",
+        "AUTH_JWT_AUDIENCE"
+      ],
+      "missing_keys": []
+    }
+  },
+  "inputs": {
+    "env_dir": "/tmp/iot-wave1-secrets"
+  }
+}
