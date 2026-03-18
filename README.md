@@ -7,6 +7,14 @@ Repository for shared runtime and platform-level operational controls.
 - Wave 6 `W6-01`: Node-RED bridge-only freeze controls.
 - Wave 6 `W6-07`: Vault bootstrap + runtime secret validation baseline.
 - Wave 6 `W6-09`: SLO + alerting activation baseline.
+- Wave 7 `W7-06` (planned): observability and runbook baseline for `partner-integration-layer` adapter operations.
+
+## Wave 7 Awareness
+
+`platform-foundation` is a dependency for Wave 7 partner integration rollout:
+1. provides runtime/deploy/secret/observability baseline consumed by `partner-integration-layer`;
+2. will host adapter-related SLO/alert and incident-recovery runbook controls under `W7-06`;
+3. remains policy-neutral relative to adapter business logic ownership.
 
 See:
 

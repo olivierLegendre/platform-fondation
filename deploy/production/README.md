@@ -23,6 +23,10 @@ Current status:
 `nodered/policy/w6_topology_release_gate.manifests.txt` points to these files.
 The gate verifies Node-RED runtime absence from production manifests.
 
+Wave 7 note:
+- `partner-integration-layer` deploy artifacts are intentionally not in this manifest set yet;
+- they will be added in Wave 7 once adapter security/tenancy and runbook controls are validated.
+
 ## Before go-live
 
 1. Replace placeholder images/tags with real production artifacts.
