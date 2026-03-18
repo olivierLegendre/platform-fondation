@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "finding_count": 0,
+  "findings": [],
+  "checks": {
+    "manifest_namespace": "PASS",
+    "compose_namespace": "PASS",
+    "topology_gate": "PASS",
+    "retirement_decision": "READY_FOR_W6_10_CLOSURE",
+    "pullability": "PASS"
+  },
+  "inputs": {
+    "manifest": "/home/olivier/work/iot_services/platform-foundation/deploy/production/ghcr-service-images.manifest",
+    "compose": [
+      "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/reference-api.compose.yaml",
+      "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/device-ingestion.compose.yaml",
+      "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/channel-policy-router.compose.yaml",
+      "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/vault-secrets-runtime.compose.yaml"
+    ],
+    "topology": "/home/olivier/work/iot_services/platform-foundation/nodered/reports/w6_topology_release_gate_report.json",
+    "retirement": "/home/olivier/work/iot_services/platform-foundation/nodered/reports/w6_retirement_readiness_report.json",
+    "pullability": "/home/olivier/work/iot_services/platform-foundation/deploy/production/reports/wave8-pullability-report.json"
+  }
+}

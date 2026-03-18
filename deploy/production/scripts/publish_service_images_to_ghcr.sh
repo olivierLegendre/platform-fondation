@@ -6,7 +6,7 @@ PRODUCTION_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PLATFORM_FOUNDATION_ROOT="$(cd "${PRODUCTION_DIR}/../.." && pwd)"
 IOT_SERVICES_ROOT="$(cd "${PLATFORM_FOUNDATION_ROOT}/.." && pwd)"
 MANIFEST_FILE="${MANIFEST_FILE:-${PRODUCTION_DIR}/ghcr-service-images.manifest}"
-IMAGE_TAG="${IMAGE_TAG:-v0.1.0}"
+IMAGE_TAG="${IMAGE_TAG:-v0.2.0}"
 
 require_env() {
   local name="$1"

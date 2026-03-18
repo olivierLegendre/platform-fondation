@@ -6,6 +6,7 @@ Current status:
 - scaffolded baseline for service topology checks;
 - Node-RED intentionally absent from all manifests;
 - image tags and runtime details are placeholders and must be replaced before real deployment.
+- Wave 8 namespace migration baseline applied for `ghcr.io/olivierlegendre/...`.
 
 ## Files
 
@@ -17,6 +18,8 @@ Current status:
 - `scripts/publish_service_images_to_ghcr.sh`
 - `scripts/verify_ghcr_images_pullable.sh`
 - `scripts/run_ghcr_publish_proof.sh`
+- `scripts/run_wave8_namespace_readiness.sh`
+- `scripts/evaluate_wave8_namespace_readiness.py`
 
 ## How this is used
 
@@ -49,7 +52,7 @@ Ownership split:
 2. Environment variables:
 - `GHCR_USERNAME`
 - `GHCR_TOKEN` (PAT with package publish rights)
-- optional `IMAGE_TAG` (default: `v0.1.0`)
+- optional `IMAGE_TAG` (default: `v0.2.0`)
 
 ### Publish command
 
@@ -57,7 +60,7 @@ Ownership split:
 cd /home/olivier/work/iot_services/platform-foundation
 GHCR_USERNAME=<github-user> \
 GHCR_TOKEN=<token> \
-IMAGE_TAG=v0.1.0 \
+IMAGE_TAG=v0.2.0 \
 ./deploy/production/scripts/publish_service_images_to_ghcr.sh
 ```
 
@@ -65,7 +68,7 @@ IMAGE_TAG=v0.1.0 \
 
 ```bash
 cd /home/olivier/work/iot_services/platform-foundation
-IMAGE_TAG=v0.1.0 \
+IMAGE_TAG=v0.2.0 \
 ./deploy/production/scripts/verify_ghcr_images_pullable.sh
 ```
 
@@ -80,3 +83,24 @@ Behavior:
 1. optionally loads `deploy/production/scripts/ghcr-publish.env` if present;
 2. prompts for any missing `GHCR_USERNAME`, `GHCR_TOKEN`, `IMAGE_TAG`;
 3. runs publish then pullability verification.
+
+## Wave 8 Namespace Readiness
+
+Purpose: validate namespace migration readiness (`ghcr.io/olivierlegendre/...`) with manifest checks, topology gate rerun, retirement decision rerun, and pullability check integration.
+
+Runner:
+
+```bash
+cd /home/olivier/work/iot_services/platform-foundation
+./deploy/production/scripts/run_wave8_namespace_readiness.sh
+```
+
+Output report:
+- `deploy/production/reports/wave8-namespace-readiness-report.json`
+
+Optional local mode (skip pullability until migrated images/permissions are available):
+
+```bash
+cd /home/olivier/work/iot_services/platform-foundation
+SKIP_PULLABILITY=true ./deploy/production/scripts/run_wave8_namespace_readiness.sh
+```

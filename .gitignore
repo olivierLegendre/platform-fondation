@@ -12,6 +12,10 @@ __pycache__/
 .mypy_cache/
 .venv/
 
+# Local deployment secrets
+deploy/production/scripts/ghcr-publish.env
+deploy/production/scripts/ghcr-push.env
+
 # Node
 node_modules/
 .next/

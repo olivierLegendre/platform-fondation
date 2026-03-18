@@ -20,8 +20,8 @@ if [[ -z "${GHCR_TOKEN:-}" ]]; then
 fi
 
 if [[ -z "${IMAGE_TAG:-}" ]]; then
-  read -r -p "Image tag [v0.1.0]: " IMAGE_TAG
-  IMAGE_TAG="${IMAGE_TAG:-v0.1.0}"
+  read -r -p "Image tag [v0.2.0]: " IMAGE_TAG
+  IMAGE_TAG="${IMAGE_TAG:-v0.2.0}"
 fi
 
 export GHCR_USERNAME GHCR_TOKEN IMAGE_TAG

@@ -1,16 +1,16 @@
 {
   "decision": "READY_FOR_W6_10_CLOSURE",
   "managed_gate": {
-    "path": "nodered/reports/w6_topology_release_gate_report.json",
+    "path": "/home/olivier/work/iot_services/platform-foundation/nodered/reports/w6_topology_release_gate_report.json",
     "status": "PASS",
     "finding_count": 0
   },
   "legacy_gap": {
-    "path": "nodered/reports/poc_topology_retirement_gap_report.json",
+    "path": "/home/olivier/work/iot_services/platform-foundation/nodered/reports/poc_topology_retirement_gap_report.json",
     "status": "FAIL",
     "finding_count": 2
   },
-  "manifest_set": "nodered/policy/w6_topology_release_gate.manifests.txt",
+  "manifest_set": "/home/olivier/work/iot_services/platform-foundation/nodered/policy/w6_topology_release_gate.manifests.txt",
   "manifest_set_confirmed": true,
   "blocker_count": 0,
   "warning_count": 0,

@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRODUCTION_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 MANIFEST_FILE="${MANIFEST_FILE:-${PRODUCTION_DIR}/ghcr-service-images.manifest}"
-IMAGE_TAG="${IMAGE_TAG:-v0.1.0}"
+IMAGE_TAG="${IMAGE_TAG:-v0.2.0}"
 
 if [[ ! -f "${MANIFEST_FILE}" ]]; then
   echo "manifest file not found: ${MANIFEST_FILE}" >&2
