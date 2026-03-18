@@ -1,0 +1,336 @@
+{
+  "source_flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "candidate_report": "nodered/reports/poc_reference_api_cutover_candidates.json",
+  "output_flows": "nodered/flows/poc_reference_api_cutover_preview.json",
+  "candidate_count": 61,
+  "disabled_count": 55,
+  "disabled": [
+    {
+      "id": "api_domain_format_ref_created",
+      "type": "function",
+      "name": "domain.api.format_single_reference_created"
+    },
+    {
+      "id": "api_domain_format_ref_list",
+      "type": "function",
+      "name": "domain.mapping.format_device_references"
+    },
+    {
+      "id": "api_domain_format_ref_mapping_fields",
+      "type": "function",
+      "name": "domain.api.format_mapping_fields_response"
+    },
+    {
+      "id": "api_domain_format_ref_mappings_replace",
+      "type": "function",
+      "name": "domain.api.format_mappings_replace_response"
+    },
+    {
+      "id": "api_domain_format_ref_suggestions",
+      "type": "function",
+      "name": "domain.mapping.format_reference_suggestions"
+    },
+    {
+      "id": "api_domain_format_ref_updated",
+      "type": "function",
+      "name": "domain.api.format_single_reference_updated"
+    },
+    {
+      "id": "api_domain_parse_ref_list",
+      "type": "function",
+      "name": "domain.api.parse_ref_list_filters"
+    },
+    {
+      "id": "api_domain_parse_ref_suggestions",
+      "type": "function",
+      "name": "domain.api.parse_ref_suggestion_filters"
+    },
+    {
+      "id": "api_domain_validate_ref_create",
+      "type": "function",
+      "name": "domain.api.validate_create_request"
+    },
+    {
+      "id": "api_domain_validate_ref_link",
+      "type": "function",
+      "name": "domain.api.validate_link_request"
+    },
+    {
+      "id": "api_domain_validate_ref_mapping_fields",
+      "type": "function",
+      "name": "domain.api.validate_mapping_fields_request"
+    },
+    {
+      "id": "api_domain_validate_ref_mappings_replace",
+      "type": "function",
+      "name": "domain.api.validate_mappings_replace_request"
+    },
+    {
+      "id": "api_domain_validate_ref_update",
+      "type": "function",
+      "name": "domain.api.validate_update_request"
+    },
+    {
+      "id": "api_domain_wrap_ref_list",
+      "type": "function",
+      "name": "domain.api.wrap_ok_list"
+    },
+    {
+      "id": "api_domain_wrap_ref_suggestions",
+      "type": "function",
+      "name": "domain.api.wrap_ok"
+    },
+    {
+      "id": "api_gate_ref_create_conflict",
+      "type": "function",
+      "name": "domain.api.reject_create_conflict"
+    },
+    {
+      "id": "api_gate_ref_link_device_exists",
+      "type": "function",
+      "name": "domain.api.ensure_link_device_exists"
+    },
+    {
+      "id": "api_gate_ref_link_reference_exists",
+      "type": "function",
+      "name": "domain.api.ensure_link_reference_exists"
+    },
+    {
+      "id": "api_gate_ref_update_exists",
+      "type": "function",
+      "name": "domain.api.ensure_update_target_exists"
+    },
+    {
+      "id": "api_http_resp_ref_create",
+      "type": "http response",
+      "name": "API response create reference"
+    },
+    {
+      "id": "api_http_resp_ref_link",
+      "type": "http response",
+      "name": "API response device-reference link"
+    },
+    {
+      "id": "api_http_resp_ref_list",
+      "type": "http response",
+      "name": "API response references list"
+    },
+    {
+      "id": "api_http_resp_ref_mapping_fields",
+      "type": "http response",
+      "name": "API response mapping fields"
+    },
+    {
+      "id": "api_http_resp_ref_mappings_replace",
+      "type": "http response",
+      "name": "API response mappings replace"
+    },
+    {
+      "id": "api_http_resp_ref_suggestions",
+      "type": "http response",
+      "name": "API response suggestions"
+    },
+    {
+      "id": "api_http_resp_ref_update",
+      "type": "http response",
+      "name": "API response update reference"
+    },
+    {
+      "id": "api_in_ref_create",
+      "type": "http in",
+      "name": "API POST /api/v1/device-references"
+    },
+    {
+      "id": "api_in_ref_link",
+      "type": "http in",
+      "name": "API POST /api/v1/device-reference-links"
+    },
+    {
+      "id": "api_in_ref_list",
+      "type": "http in",
+      "name": "API GET /api/v1/device-references"
+    },
+    {
+      "id": "api_in_ref_mapping_fields",
+      "type": "http in",
+      "name": "API GET /api/v1/device-references/:id/mapping-fields"
+    },
+    {
+      "id": "api_in_ref_mappings_replace",
+      "type": "http in",
+      "name": "API PUT /api/v1/device-references/:id/mappings"
+    },
+    {
+      "id": "api_in_ref_suggestions",
+      "type": "http in",
+      "name": "API GET /api/v1/device-references/suggestions"
+    },
+    {
+      "id": "api_in_ref_update",
+      "type": "http in",
+      "name": "API PUT /api/v1/device-references/:id"
+    },
+    {
+      "id": "api_ref_link_prepare_lookup",
+      "type": "function",
+      "name": "domain.api.prepare_link_reference_lookup"
+    },
+    {
+      "id": "api_repo_build_device_assign_ref",
+      "type": "function",
+      "name": "repo.devices.build_assign_reference_query"
+    },
+    {
+      "id": "api_repo_build_ref_create",
+      "type": "function",
+      "name": "repo.deviceReference.build_create_query"
+    },
+    {
+      "id": "api_repo_build_ref_find_for_create",
+      "type": "function",
+      "name": "repo.deviceReference.build_find_by_key_query"
+    },
+    {
+      "id": "api_repo_build_ref_get_for_link",
+      "type": "function",
+      "name": "repo.deviceReference.build_get_by_id_query_link"
+    },
+    {
+      "id": "api_repo_build_ref_get_for_update",
+      "type": "function",
+      "name": "repo.deviceReference.build_get_by_id_query"
+    },
+    {
+      "id": "api_repo_build_ref_list",
+      "type": "function",
+      "name": "repo.deviceReference.build_list_query"
+    },
+    {
+      "id": "api_repo_build_ref_mapping_fields",
+      "type": "function",
+      "name": "repo.deviceReferenceMapping.build_fields_query"
+    },
+    {
+      "id": "api_repo_build_ref_mappings_replace",
+      "type": "function",
+      "name": "repo.deviceReferenceMapping.build_replace_query"
+    },
+    {
+      "id": "api_repo_build_ref_suggestions",
+      "type": "function",
+      "name": "repo.deviceReference.build_suggestion_query"
+    },
+    {
+      "id": "api_repo_build_ref_update",
+      "type": "function",
+      "name": "repo.deviceReference.build_update_query"
+    },
+    {
+      "id": "api_repo_exec_device_assign_ref",
+      "type": "postgresql",
+      "name": "repo.devices.execute_assign_reference_query"
+    },
+    {
+      "id": "api_repo_exec_ref_create",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_create_query"
+    },
+    {
+      "id": "api_repo_exec_ref_find_for_create",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_find_by_key_query"
+    },
+    {
+      "id": "api_repo_exec_ref_get_for_link",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_get_by_id_query_link"
+    },
+    {
+      "id": "api_repo_exec_ref_get_for_update",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_get_by_id_query"
+    },
+    {
+      "id": "api_repo_exec_ref_list",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_list_query"
+    },
+    {
+      "id": "api_repo_exec_ref_mapping_fields",
+      "type": "postgresql",
+      "name": "repo.deviceReferenceMapping.execute_fields_query"
+    },
+    {
+      "id": "api_repo_exec_ref_mappings_replace",
+      "type": "postgresql",
+      "name": "repo.deviceReferenceMapping.execute_replace_query"
+    },
+    {
+      "id": "api_repo_exec_ref_suggestions",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_suggestion_query"
+    },
+    {
+      "id": "api_repo_exec_ref_update",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_update_query"
+    },
+    {
+      "id": "api_wrap_ref_link_success",
+      "type": "function",
+      "name": "domain.api.wrap_link_success"
+    }
+  ],
+  "skipped_candidate_count": 6,
+  "skipped_candidates": [
+    {
+      "id": "8350c63ee921963f",
+      "type": "tab",
+      "name": ""
+    },
+    {
+      "id": "api_json_ref_create",
+      "type": "json",
+      "name": "JSON parse create"
+    },
+    {
+      "id": "api_json_ref_link",
+      "type": "json",
+      "name": "JSON parse link"
+    },
+    {
+      "id": "api_json_ref_mappings_replace",
+      "type": "json",
+      "name": "JSON parse mappings replace"
+    },
+    {
+      "id": "api_json_ref_update",
+      "type": "json",
+      "name": "JSON parse update"
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)"
+    }
+  ],
+  "rules": {
+    "disable_types": [
+      "function",
+      "http in",
+      "http response",
+      "json",
+      "postgresql"
+    ],
+    "function_prefixes": [
+      "api_",
+      "domain.api.",
+      "repo.deviceReference",
+      "repo.deviceReferenceMapping"
+    ],
+    "http_path_prefixes": [
+      "/api/v1/device-reference",
+      "/api/v1/device-references"
+    ]
+  }
+}

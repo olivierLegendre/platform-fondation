@@ -1,0 +1,64 @@
+groups:
+  - name: wave6-critical-path-alerts
+    interval: 30s
+    rules:
+      - alert: IngestionApiHighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{service="device-ingestion-service",status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(http_requests_total{service="device-ingestion-service"}[5m])), 1)) > 0.02
+        for: 10m
+        labels:
+          severity: page
+          service: device-ingestion-service
+          wave: "6"
+        annotations:
+          summary: "device-ingestion-service 5xx ratio > 2%"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: ReferenceApiHighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{service="reference-api-service",status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(http_requests_total{service="reference-api-service"}[5m])), 1)) > 0.02
+        for: 10m
+        labels:
+          severity: page
+          service: reference-api-service
+          wave: "6"
+        annotations:
+          summary: "reference-api-service 5xx ratio > 2%"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: CommandRouterQueueDepthHigh
+        expr: channel_policy_router_queue_depth > 200
+        for: 5m
+        labels:
+          severity: page
+          service: channel-policy-router
+          wave: "6"
+        annotations:
+          summary: "channel-policy-router queue depth > 200"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: CommandRouterSlaBreachRatioHigh
+        expr: channel_policy_router_reconciliation_sla_breach_ratio > 0.01
+        for: 15m
+        labels:
+          severity: page
+          service: channel-policy-router
+          wave: "6"
+        annotations:
+          summary: "reconciliation SLA breach ratio > 1%"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"
+
+      - alert: AutomationWorkflowStartLatencyHigh
+        expr: histogram_quantile(0.95, sum(rate(automation_workflow_start_seconds_bucket[5m])) by (le)) > 5
+        for: 10m
+        labels:
+          severity: warn
+          service: automation-scenario-service
+          wave: "6"
+        annotations:
+          summary: "workflow start p95 latency > 5s"
+          runbook: "docs/runbooks/incident-rollback-recovery.md"

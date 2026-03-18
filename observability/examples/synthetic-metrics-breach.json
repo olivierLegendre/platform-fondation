@@ -1,0 +1,7 @@
+{
+  "device_ingestion_5xx_ratio": 0.05,
+  "reference_api_5xx_ratio": 0.03,
+  "channel_policy_router_queue_depth": 340,
+  "channel_policy_router_reconciliation_sla_breach_ratio": 0.08,
+  "automation_workflow_start_p95_seconds": 7.2
+}

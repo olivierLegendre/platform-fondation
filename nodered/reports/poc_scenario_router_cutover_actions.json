@@ -1,0 +1,105 @@
+{
+  "source_flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "candidate_report": "nodered/reports/poc_scenario_router_cutover_candidates.json",
+  "output_flows": "nodered/flows/poc_scenario_router_cutover_preview.json",
+  "candidate_count": 15,
+  "disabled_count": 11,
+  "disabled": [
+    {
+      "id": "6934769a35a4061a",
+      "type": "mqtt out",
+      "name": "MQTT Out (commands)"
+    },
+    {
+      "id": "ac1d79fa2b1f40ad",
+      "type": "function",
+      "name": "Route scenario actions"
+    },
+    {
+      "id": "b8dbcb6d285b3382",
+      "type": "function",
+      "name": "domain.dashboard.set_active_scenario"
+    },
+    {
+      "id": "c4a7252d6e8f4b11",
+      "type": "function",
+      "name": "domain.dashboard.capture_scenario_values"
+    },
+    {
+      "id": "fn_build_toggle_cmd",
+      "type": "function",
+      "name": "domain.dashboard.build_toggle_command"
+    },
+    {
+      "id": "fn_merge_scenario_values",
+      "type": "function",
+      "name": "Merge scenario values"
+    },
+    {
+      "id": "fn_q_scenario_bootstrap",
+      "type": "function",
+      "name": "repo.dashboard.build_scenario_bootstrap_query"
+    },
+    {
+      "id": "fn_trigger_scenario_event",
+      "type": "function",
+      "name": "domain.dashboard.trigger_scenario_event"
+    },
+    {
+      "id": "grp_scenarios",
+      "type": "ui-group",
+      "name": "Scenario"
+    },
+    {
+      "id": "pg_q_scenario_bootstrap",
+      "type": "postgresql",
+      "name": "Query scenario bootstrap"
+    },
+    {
+      "id": "tpl_scenarios",
+      "type": "ui-template",
+      "name": "Scenario placeholder"
+    }
+  ],
+  "skipped_candidate_count": 4,
+  "skipped_candidates": [
+    {
+      "id": "40d558481cad3db6",
+      "type": "function",
+      "name": "domain.ingest.normalize_mqtt"
+    },
+    {
+      "id": "8350c63ee921963f",
+      "type": "tab",
+      "name": ""
+    },
+    {
+      "id": "bkr_mqtt_pg",
+      "type": "mqtt-broker",
+      "name": "Mosquitto (edit me)"
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)"
+    }
+  ],
+  "rules": {
+    "disable_types": [
+      "function",
+      "mqtt out",
+      "postgresql",
+      "ui-group",
+      "ui-template"
+    ],
+    "scenario_name_tokens": [
+      "scenario",
+      "route scenario actions",
+      "toggle_command"
+    ],
+    "mqtt_command_topic_tokens": [
+      "/set",
+      "command"
+    ]
+  }
+}

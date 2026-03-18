@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "manifest_count": 4,
+  "checked_service_count": 5,
+  "finding_count": 0,
+  "findings": [],
+  "manifests": [
+    {
+      "manifest": "/home/olivier/work/iot_services/reference-api-service/docker-compose.postgres.yml",
+      "checked_service_count": 1,
+      "finding_count": 0,
+      "findings": []
+    },
+    {
+      "manifest": "/home/olivier/work/iot_services/device-ingestion-service/docker-compose.postgres.yml",
+      "checked_service_count": 1,
+      "finding_count": 0,
+      "findings": []
+    },
+    {
+      "manifest": "/home/olivier/work/iot_services/channel-policy-router/docker-compose.postgres.yml",
+      "checked_service_count": 1,
+      "finding_count": 0,
+      "findings": []
+    },
+    {
+      "manifest": "/home/olivier/work/iot_services/platform-foundation/vault/examples/docker-compose.secrets.override.yaml",
+      "checked_service_count": 2,
+      "finding_count": 0,
+      "findings": []
+    }
+  ]
+}

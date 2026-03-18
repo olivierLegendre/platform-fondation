@@ -1,0 +1,1436 @@
+{
+  "source_flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "policy": "nodered/policy/bridge_allowlist.json",
+  "output_flows": "nodered/flows/poc_retirement_cutover_preview.json",
+  "total_input_nodes": 169,
+  "total_output_nodes": 145,
+  "disabled_runtime_count": 134,
+  "removed_config_count": 24,
+  "disabled_runtime": [
+    {
+      "id": "014f2b8fe99b97fe",
+      "type": "function",
+      "name": "repo.telemetry.build_insert_raw_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "1e28fb88cb6b4b16",
+      "type": "postgresql",
+      "name": "repo.telemetry.execute_insert_raw",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "281e164c860e96ee",
+      "type": "function",
+      "name": "repo.devices.build_upsert_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "2adefdd96498429c",
+      "type": "inject",
+      "name": "Init activity range",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "2f98b1d0b7c24c2f",
+      "type": "ui-dropdown",
+      "name": "Activity source",
+      "reasons": [
+        "forbidden_runtime_type:ui-dropdown",
+        "runtime_type_not_allowlisted:ui-dropdown"
+      ]
+    },
+    {
+      "id": "40d558481cad3db6",
+      "type": "function",
+      "name": "domain.ingest.normalize_mqtt",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "4b5c96f665a14d32",
+      "type": "inject",
+      "name": "Init activity source",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "55dfac0a4fe13584",
+      "type": "function",
+      "name": "domain.dashboard.build_activity_chart_points",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "58a7365fbe764f90",
+      "type": "inject",
+      "name": "Init periodic range",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "6f18c6788b6d7dd4",
+      "type": "function",
+      "name": "domain.dashboard.build_activity_chart_points",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "77fd592477b6cdab",
+      "type": "mqtt in",
+      "name": "MQTT In (Zigbee2MQTT)",
+      "reasons": [
+        "mqtt_in_topic_not_allowlisted:zigbee2mqtt/#"
+      ]
+    },
+    {
+      "id": "7b41f1c1fb4a4e90",
+      "type": "inject",
+      "name": "Refresh activity (record)",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "7c0990bcbebdeaad",
+      "type": "postgresql",
+      "name": "repo.devices.execute_upsert",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "9d4e7b4e4a7a7a53",
+      "type": "ui-chart",
+      "name": "Activity histogram (record)",
+      "reasons": [
+        "forbidden_runtime_type:ui-chart",
+        "runtime_type_not_allowlisted:ui-chart"
+      ]
+    },
+    {
+      "id": "a6fe0b1eaf258827",
+      "type": "function",
+      "name": "domain.ingest.parse_json_zigbee_tolerant",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "ac1d79fa2b1f40ad",
+      "type": "function",
+      "name": "Route scenario actions",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "api_domain_format_ref_created",
+      "type": "function",
+      "name": "domain.api.format_single_reference_created",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_format_ref_list",
+      "type": "function",
+      "name": "domain.mapping.format_device_references",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_format_ref_mapping_fields",
+      "type": "function",
+      "name": "domain.api.format_mapping_fields_response",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_format_ref_mappings_replace",
+      "type": "function",
+      "name": "domain.api.format_mappings_replace_response",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_format_ref_suggestions",
+      "type": "function",
+      "name": "domain.mapping.format_reference_suggestions",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_format_ref_updated",
+      "type": "function",
+      "name": "domain.api.format_single_reference_updated",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_parse_ref_list",
+      "type": "function",
+      "name": "domain.api.parse_ref_list_filters",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_parse_ref_suggestions",
+      "type": "function",
+      "name": "domain.api.parse_ref_suggestion_filters",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_validate_ref_create",
+      "type": "function",
+      "name": "domain.api.validate_create_request",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_validate_ref_link",
+      "type": "function",
+      "name": "domain.api.validate_link_request",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_validate_ref_mapping_fields",
+      "type": "function",
+      "name": "domain.api.validate_mapping_fields_request",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_validate_ref_mappings_replace",
+      "type": "function",
+      "name": "domain.api.validate_mappings_replace_request",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_validate_ref_update",
+      "type": "function",
+      "name": "domain.api.validate_update_request",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_wrap_ref_list",
+      "type": "function",
+      "name": "domain.api.wrap_ok_list",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_domain_wrap_ref_suggestions",
+      "type": "function",
+      "name": "domain.api.wrap_ok",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_gate_ref_create_conflict",
+      "type": "function",
+      "name": "domain.api.reject_create_conflict",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_gate_ref_link_device_exists",
+      "type": "function",
+      "name": "domain.api.ensure_link_device_exists",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_gate_ref_link_reference_exists",
+      "type": "function",
+      "name": "domain.api.ensure_link_reference_exists",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_gate_ref_update_exists",
+      "type": "function",
+      "name": "domain.api.ensure_update_target_exists",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_create",
+      "type": "http response",
+      "name": "API response create reference",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_link",
+      "type": "http response",
+      "name": "API response device-reference link",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_list",
+      "type": "http response",
+      "name": "API response references list",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_mapping_fields",
+      "type": "http response",
+      "name": "API response mapping fields",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_mappings_replace",
+      "type": "http response",
+      "name": "API response mappings replace",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_suggestions",
+      "type": "http response",
+      "name": "API response suggestions",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_http_resp_ref_update",
+      "type": "http response",
+      "name": "API response update reference",
+      "reasons": [
+        "forbidden_runtime_type:http response",
+        "runtime_type_not_allowlisted:http response"
+      ]
+    },
+    {
+      "id": "api_in_ref_create",
+      "type": "http in",
+      "name": "API POST /api/v1/device-references",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_in_ref_link",
+      "type": "http in",
+      "name": "API POST /api/v1/device-reference-links",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_in_ref_list",
+      "type": "http in",
+      "name": "API GET /api/v1/device-references",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_in_ref_mapping_fields",
+      "type": "http in",
+      "name": "API GET /api/v1/device-references/:id/mapping-fields",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_in_ref_mappings_replace",
+      "type": "http in",
+      "name": "API PUT /api/v1/device-references/:id/mappings",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_in_ref_suggestions",
+      "type": "http in",
+      "name": "API GET /api/v1/device-references/suggestions",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_in_ref_update",
+      "type": "http in",
+      "name": "API PUT /api/v1/device-references/:id",
+      "reasons": [
+        "forbidden_runtime_type:http in",
+        "runtime_type_not_allowlisted:http in"
+      ]
+    },
+    {
+      "id": "api_ref_link_prepare_lookup",
+      "type": "function",
+      "name": "domain.api.prepare_link_reference_lookup",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "api_repo_build_device_assign_ref",
+      "type": "function",
+      "name": "repo.devices.build_assign_reference_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_create",
+      "type": "function",
+      "name": "repo.deviceReference.build_create_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_find_for_create",
+      "type": "function",
+      "name": "repo.deviceReference.build_find_by_key_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_get_for_link",
+      "type": "function",
+      "name": "repo.deviceReference.build_get_by_id_query_link",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_get_for_update",
+      "type": "function",
+      "name": "repo.deviceReference.build_get_by_id_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_list",
+      "type": "function",
+      "name": "repo.deviceReference.build_list_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_mapping_fields",
+      "type": "function",
+      "name": "repo.deviceReferenceMapping.build_fields_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_mappings_replace",
+      "type": "function",
+      "name": "repo.deviceReferenceMapping.build_replace_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_suggestions",
+      "type": "function",
+      "name": "repo.deviceReference.build_suggestion_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_build_ref_update",
+      "type": "function",
+      "name": "repo.deviceReference.build_update_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_device_assign_ref",
+      "type": "postgresql",
+      "name": "repo.devices.execute_assign_reference_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_create",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_create_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_find_for_create",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_find_by_key_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_get_for_link",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_get_by_id_query_link",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_get_for_update",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_get_by_id_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_list",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_list_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_mapping_fields",
+      "type": "postgresql",
+      "name": "repo.deviceReferenceMapping.execute_fields_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_mappings_replace",
+      "type": "postgresql",
+      "name": "repo.deviceReferenceMapping.execute_replace_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_suggestions",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_suggestion_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_repo_exec_ref_update",
+      "type": "postgresql",
+      "name": "repo.deviceReference.execute_update_query",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "api_wrap_ref_link_success",
+      "type": "function",
+      "name": "domain.api.wrap_link_success",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "b5f6c3d1e2a4f7b8",
+      "type": "function",
+      "name": "domain.dashboard.set_activity_range",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "b6c0b4e6a80c63d1",
+      "type": "postgresql",
+      "name": "Query activity (record)",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "b8a7f6e5d4c3b2a1",
+      "type": "function",
+      "name": "repo.dashboard.build_activity_complete_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "b8dbcb6d285b3382",
+      "type": "function",
+      "name": "domain.dashboard.set_active_scenario",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "baa340c8c171b714",
+      "type": "ui-chart",
+      "name": "Activity histogram",
+      "reasons": [
+        "forbidden_runtime_type:ui-chart",
+        "runtime_type_not_allowlisted:ui-chart"
+      ]
+    },
+    {
+      "id": "c4a7252d6e8f4b11",
+      "type": "function",
+      "name": "domain.dashboard.capture_scenario_values",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "cfdf5de51b5addff",
+      "type": "function",
+      "name": "domain.dashboard.update_activity_histogram",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "chart_periodic_th",
+      "type": "ui-template",
+      "name": "Periodic metrics by device",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "d2b5039a3ad0b0e9",
+      "type": "postgresql",
+      "name": "Query activity (complete)",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "d61e8a06f0db4593",
+      "type": "inject",
+      "name": "Init periodic bucket",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "d7b2c5a1e4f8b3c6",
+      "type": "inject",
+      "name": "Auto refresh activity",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "dd_periodic_bucket",
+      "type": "ui-dropdown",
+      "name": "Periodic bucket",
+      "reasons": [
+        "forbidden_runtime_type:ui-dropdown",
+        "runtime_type_not_allowlisted:ui-dropdown"
+      ]
+    },
+    {
+      "id": "dd_periodic_range",
+      "type": "ui-dropdown",
+      "name": "Periodic range",
+      "reasons": [
+        "forbidden_runtime_type:ui-dropdown",
+        "runtime_type_not_allowlisted:ui-dropdown"
+      ]
+    },
+    {
+      "id": "domain_extract_all_fields",
+      "type": "function",
+      "name": "domain.mapping.extract_all_fields",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "domain_metrics_apply_mappings",
+      "type": "function",
+      "name": "domain.metrics.apply_mappings",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain."
+      ]
+    },
+    {
+      "id": "f4f7c4a2c8d3d6c1",
+      "type": "ui-dropdown",
+      "name": "Activity range",
+      "reasons": [
+        "forbidden_runtime_type:ui-dropdown",
+        "runtime_type_not_allowlisted:ui-dropdown"
+      ]
+    },
+    {
+      "id": "f5bb859ed1b03d1f",
+      "type": "function",
+      "name": "domain.dashboard.set_activity_source",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "f9f0a5b0a5f48a9c",
+      "type": "ui-chart",
+      "name": "Activity histogram (complete)",
+      "reasons": [
+        "forbidden_runtime_type:ui-chart",
+        "runtime_type_not_allowlisted:ui-chart"
+      ]
+    },
+    {
+      "id": "fn_build_toggle_cmd",
+      "type": "function",
+      "name": "domain.dashboard.build_toggle_command",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_chart_periodic_th",
+      "type": "function",
+      "name": "domain.dashboard.format_periodic_charts_by_device",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_fmt_actuator_status",
+      "type": "function",
+      "name": "domain.dashboard.format_actuator_status",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_fmt_all_devices",
+      "type": "function",
+      "name": "domain.dashboard.format_all_devices",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_fmt_battery",
+      "type": "function",
+      "name": "domain.dashboard.format_battery_status",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_fmt_event_changes",
+      "type": "function",
+      "name": "domain.dashboard.format_event_changes",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_merge_scenario_values",
+      "type": "function",
+      "name": "Merge scenario values",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "fn_prepare_toggle",
+      "type": "function",
+      "name": "repo.dashboard.build_toggle_lookup_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_q_actuator_status",
+      "type": "function",
+      "name": "repo.dashboard.build_actuator_status_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_q_all_devices",
+      "type": "function",
+      "name": "repo.dashboard.build_all_devices_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_q_battery",
+      "type": "function",
+      "name": "repo.dashboard.build_battery_status_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_q_event_changes",
+      "type": "function",
+      "name": "repo.dashboard.build_event_sensor_changes_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_q_periodic_th",
+      "type": "function",
+      "name": "repo.dashboard.build_periodic_metrics_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_q_scenario_bootstrap",
+      "type": "function",
+      "name": "repo.dashboard.build_scenario_bootstrap_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo.",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "fn_set_periodic_bucket",
+      "type": "function",
+      "name": "domain.dashboard.set_periodic_bucket",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_set_periodic_range",
+      "type": "function",
+      "name": "domain.dashboard.set_periodic_range",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_trigger_periodic",
+      "type": "function",
+      "name": "domain.dashboard.trigger_periodic_queries",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:dashboard"
+      ]
+    },
+    {
+      "id": "fn_trigger_scenario_event",
+      "type": "function",
+      "name": "domain.dashboard.trigger_scenario_event",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:domain.",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "inj_periodic_auto",
+      "type": "inject",
+      "name": "Auto refresh periodic",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "inj_refresh_actuators",
+      "type": "inject",
+      "name": "Refresh actuator status",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "inj_refresh_all_devices",
+      "type": "inject",
+      "name": "Refresh all devices",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "inj_refresh_battery",
+      "type": "inject",
+      "name": "Refresh battery/status",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "inj_refresh_events",
+      "type": "inject",
+      "name": "Refresh event sensors",
+      "reasons": [
+        "runtime_type_not_allowlisted:inject"
+      ]
+    },
+    {
+      "id": "pg_actuator_status_query",
+      "type": "postgresql",
+      "name": "Query actuator status",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "pg_all_devices_query",
+      "type": "postgresql",
+      "name": "Query all devices",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "pg_event_changes_query",
+      "type": "postgresql",
+      "name": "Query event changes",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "pg_get_toggle_state",
+      "type": "postgresql",
+      "name": "Get actuator state for toggle",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "pg_q_battery",
+      "type": "postgresql",
+      "name": "Query battery/status",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "pg_q_periodic_th",
+      "type": "postgresql",
+      "name": "Query periodic metrics",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql"
+      ]
+    },
+    {
+      "id": "pg_q_scenario_bootstrap",
+      "type": "postgresql",
+      "name": "Query scenario bootstrap",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_contains:scenario"
+      ]
+    },
+    {
+      "id": "repo_build_candidate_upsert",
+      "type": "function",
+      "name": "repo.device_mapping_candidate.build_upsert_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "repo_exec_candidate_upsert",
+      "type": "postgresql",
+      "name": "repo.device_mapping_candidate.execute_upsert",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "repo_metrics_build_insert_query",
+      "type": "function",
+      "name": "repo.metrics.build_insert_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "repo_metrics_build_mapping_lookup",
+      "type": "function",
+      "name": "repo.metrics.build_mapping_lookup_query",
+      "reasons": [
+        "forbidden_runtime_type:function",
+        "runtime_type_not_allowlisted:function",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "repo_metrics_execute_insert",
+      "type": "postgresql",
+      "name": "repo.metrics.execute_insert",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "repo_metrics_execute_mapping_lookup",
+      "type": "postgresql",
+      "name": "repo.metrics.execute_mapping_lookup",
+      "reasons": [
+        "forbidden_runtime_type:postgresql",
+        "runtime_type_not_allowlisted:postgresql",
+        "forbidden_name_prefix:repo."
+      ]
+    },
+    {
+      "id": "tpl_activity_interactive_style",
+      "type": "ui-template",
+      "name": "Interactive controls style",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_actuator_controls_dynamic",
+      "type": "ui-template",
+      "name": "Actuator controls dynamic",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_all_devices",
+      "type": "ui-template",
+      "name": "All devices list",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_battery",
+      "type": "ui-template",
+      "name": "Battery and status view",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_device_mapping",
+      "type": "ui-template",
+      "name": "Device mapping fields",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_device_references",
+      "type": "ui-template",
+      "name": "Device references manager",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_event_changes",
+      "type": "ui-template",
+      "name": "Event sensor changes view",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_periodic_interactive_style",
+      "type": "ui-template",
+      "name": "Interactive controls style",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template"
+      ]
+    },
+    {
+      "id": "tpl_scenarios",
+      "type": "ui-template",
+      "name": "Scenario placeholder",
+      "reasons": [
+        "forbidden_runtime_type:ui-template",
+        "runtime_type_not_allowlisted:ui-template",
+        "forbidden_name_contains:scenario"
+      ]
+    }
+  ],
+  "removed_config": [
+    {
+      "id": "42c0c2f1b07f4b06",
+      "type": "ui-group",
+      "name": "Activity (Complete)"
+    },
+    {
+      "id": "73686f037df2c0ae",
+      "type": "ui-group",
+      "name": "Activity (Live)"
+    },
+    {
+      "id": "a3a82f7da98f3876",
+      "type": "ui-page",
+      "name": "Activity"
+    },
+    {
+      "id": "ca605794700c8eb2",
+      "type": "ui-theme",
+      "name": "PoC Theme"
+    },
+    {
+      "id": "d0f0b16df9a0491b",
+      "type": "ui-group",
+      "name": "Activity (Record)"
+    },
+    {
+      "id": "grp_actuators_controls",
+      "type": "ui-group",
+      "name": "Actuators"
+    },
+    {
+      "id": "grp_all_devices",
+      "type": "ui-group",
+      "name": "Received devices"
+    },
+    {
+      "id": "grp_battery",
+      "type": "ui-group",
+      "name": "Battery and status"
+    },
+    {
+      "id": "grp_device_mapping",
+      "type": "ui-group",
+      "name": "Device mapping"
+    },
+    {
+      "id": "grp_device_references",
+      "type": "ui-group",
+      "name": "Device references"
+    },
+    {
+      "id": "grp_event_changes",
+      "type": "ui-group",
+      "name": "Last 5 status changes"
+    },
+    {
+      "id": "grp_periodic_filters",
+      "type": "ui-group",
+      "name": "Periodic filters"
+    },
+    {
+      "id": "grp_periodic_th",
+      "type": "ui-group",
+      "name": "Periodic metrics by device"
+    },
+    {
+      "id": "grp_scenarios",
+      "type": "ui-group",
+      "name": "Scenario"
+    },
+    {
+      "id": "pg_actuators",
+      "type": "ui-page",
+      "name": "Actuators"
+    },
+    {
+      "id": "pg_all_devices",
+      "type": "ui-page",
+      "name": "All Devices"
+    },
+    {
+      "id": "pg_battery",
+      "type": "ui-page",
+      "name": "Battery & Status"
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)"
+    },
+    {
+      "id": "pg_device_mapping",
+      "type": "ui-page",
+      "name": "Device Mapping"
+    },
+    {
+      "id": "pg_device_references",
+      "type": "ui-page",
+      "name": "Device References"
+    },
+    {
+      "id": "pg_event_sensors",
+      "type": "ui-page",
+      "name": "Event Sensors"
+    },
+    {
+      "id": "pg_periodic",
+      "type": "ui-page",
+      "name": "Periodic Sensors"
+    },
+    {
+      "id": "pg_scenarios",
+      "type": "ui-page",
+      "name": "Scenarios"
+    },
+    {
+      "id": "ui_base_2",
+      "type": "ui-base",
+      "name": "PoC Dashboard"
+    }
+  ]
+}

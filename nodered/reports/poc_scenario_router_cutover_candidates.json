@@ -1,0 +1,130 @@
+{
+  "flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "seed_count": 6,
+  "candidate_count": 15,
+  "candidate_type_counts": {
+    "function": 8,
+    "mqtt out": 1,
+    "mqtt-broker": 1,
+    "postgreSQLConfig": 1,
+    "postgresql": 1,
+    "tab": 1,
+    "ui-group": 1,
+    "ui-template": 1
+  },
+  "seed_name_contains": [
+    "scenario",
+    "route scenario actions"
+  ],
+  "seed_topic_hints": [
+    "/set",
+    "command"
+  ],
+  "candidates": [
+    {
+      "id": "40d558481cad3db6",
+      "type": "function",
+      "name": "domain.ingest.normalize_mqtt",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "6934769a35a4061a",
+      "type": "mqtt out",
+      "name": "MQTT Out (commands)",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "8350c63ee921963f",
+      "type": "tab",
+      "name": "",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "ac1d79fa2b1f40ad",
+      "type": "function",
+      "name": "Route scenario actions",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "b8dbcb6d285b3382",
+      "type": "function",
+      "name": "domain.dashboard.set_active_scenario",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "bkr_mqtt_pg",
+      "type": "mqtt-broker",
+      "name": "Mosquitto (edit me)",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "c4a7252d6e8f4b11",
+      "type": "function",
+      "name": "domain.dashboard.capture_scenario_values",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "fn_build_toggle_cmd",
+      "type": "function",
+      "name": "domain.dashboard.build_toggle_command",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "fn_merge_scenario_values",
+      "type": "function",
+      "name": "Merge scenario values",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "fn_q_scenario_bootstrap",
+      "type": "function",
+      "name": "repo.dashboard.build_scenario_bootstrap_query",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "fn_trigger_scenario_event",
+      "type": "function",
+      "name": "domain.dashboard.trigger_scenario_event",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "grp_scenarios",
+      "type": "ui-group",
+      "name": "Scenario",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "pg_q_scenario_bootstrap",
+      "type": "postgresql",
+      "name": "Query scenario bootstrap",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "tpl_scenarios",
+      "type": "ui-template",
+      "name": "Scenario placeholder",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    }
+  ]
+}

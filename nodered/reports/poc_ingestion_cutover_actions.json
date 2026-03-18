@@ -1,0 +1,142 @@
+{
+  "source_flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "candidate_report": "nodered/reports/poc_ingestion_cutover_candidates.json",
+  "output_flows": "nodered/flows/poc_ingestion_cutover_preview.json",
+  "candidate_count": 22,
+  "disabled_count": 7,
+  "disabled": [
+    {
+      "id": "014f2b8fe99b97fe",
+      "type": "function",
+      "name": "repo.telemetry.build_insert_raw_query"
+    },
+    {
+      "id": "1e28fb88cb6b4b16",
+      "type": "postgresql",
+      "name": "repo.telemetry.execute_insert_raw"
+    },
+    {
+      "id": "281e164c860e96ee",
+      "type": "function",
+      "name": "repo.devices.build_upsert_query"
+    },
+    {
+      "id": "40d558481cad3db6",
+      "type": "function",
+      "name": "domain.ingest.normalize_mqtt"
+    },
+    {
+      "id": "77fd592477b6cdab",
+      "type": "mqtt in",
+      "name": "MQTT In (Zigbee2MQTT)"
+    },
+    {
+      "id": "7c0990bcbebdeaad",
+      "type": "postgresql",
+      "name": "repo.devices.execute_upsert"
+    },
+    {
+      "id": "a6fe0b1eaf258827",
+      "type": "function",
+      "name": "domain.ingest.parse_json_zigbee_tolerant"
+    }
+  ],
+  "skipped_candidate_count": 15,
+  "skipped_candidates": [
+    {
+      "id": "01541a7a87ea3f4d",
+      "type": "debug",
+      "name": "DB insert result"
+    },
+    {
+      "id": "73686f037df2c0ae",
+      "type": "ui-group",
+      "name": "Activity (Live)"
+    },
+    {
+      "id": "8350c63ee921963f",
+      "type": "tab",
+      "name": ""
+    },
+    {
+      "id": "af4eab925dd532d1",
+      "type": "debug",
+      "name": "Debug (envelope)"
+    },
+    {
+      "id": "baa340c8c171b714",
+      "type": "ui-chart",
+      "name": "Activity histogram"
+    },
+    {
+      "id": "bkr_mqtt_pg",
+      "type": "mqtt-broker",
+      "name": "Mosquitto (edit me)"
+    },
+    {
+      "id": "c4a7252d6e8f4b11",
+      "type": "function",
+      "name": "domain.dashboard.capture_scenario_values"
+    },
+    {
+      "id": "cfdf5de51b5addff",
+      "type": "function",
+      "name": "domain.dashboard.update_activity_histogram"
+    },
+    {
+      "id": "domain_extract_all_fields",
+      "type": "function",
+      "name": "domain.mapping.extract_all_fields"
+    },
+    {
+      "id": "fn_trigger_scenario_event",
+      "type": "function",
+      "name": "domain.dashboard.trigger_scenario_event"
+    },
+    {
+      "id": "grp_scenarios",
+      "type": "ui-group",
+      "name": "Scenario"
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)"
+    },
+    {
+      "id": "repo_build_candidate_upsert",
+      "type": "function",
+      "name": "repo.device_mapping_candidate.build_upsert_query"
+    },
+    {
+      "id": "repo_metrics_build_mapping_lookup",
+      "type": "function",
+      "name": "repo.metrics.build_mapping_lookup_query"
+    },
+    {
+      "id": "tpl_scenarios",
+      "type": "ui-template",
+      "name": "Scenario placeholder"
+    }
+  ],
+  "rules": {
+    "disable_runtime_types": [
+      "function",
+      "mqtt in",
+      "postgresql"
+    ],
+    "function_name_prefix": "domain.ingest.",
+    "function_name_exact": [
+      "repo.devices.build_upsert_query",
+      "repo.telemetry.build_insert_raw_query"
+    ],
+    "postgresql_name_prefixes": [
+      "repo.devices.execute_",
+      "repo.telemetry.execute_"
+    ],
+    "mqtt_in_topics": [
+      "application/+/device/+/event/up",
+      "zigbee2mqtt/#"
+    ]
+  }
+}

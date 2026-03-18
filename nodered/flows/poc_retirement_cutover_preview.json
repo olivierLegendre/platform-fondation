@@ -1,0 +1,3141 @@
+[
+  {
+    "id": "8350c63ee921963f",
+    "type": "tab",
+    "label": "PoC MQTT PostgreSQL + Dashboard",
+    "disabled": false,
+    "info": "Ingest Zigbee2MQTT + ChirpStack events, normalize, upsert the device registry, insert telemetry into Postgres, and drive a FlowFuse Dashboard histogram + control buttons."
+  },
+  {
+    "id": "bkr_mqtt_pg",
+    "type": "mqtt-broker",
+    "name": "Mosquitto (edit me)",
+    "broker": "mosquitto",
+    "port": "1883",
+    "clientid": "nodered-poc-pg",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": "",
+    "willMsg": {},
+    "userProps": "",
+    "sessionExpiry": ""
+  },
+  {
+    "id": "77fd592477b6cdab",
+    "type": "mqtt in",
+    "z": "8350c63ee921963f",
+    "name": "MQTT In (Zigbee2MQTT)",
+    "topic": "zigbee2mqtt/#",
+    "qos": "0",
+    "datatype": "auto",
+    "broker": "bkr_mqtt_pg",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 240,
+    "wires": [
+      [
+        "a6fe0b1eaf258827"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "e9426fd5c4f32e2c",
+    "type": "mqtt in",
+    "z": "8350c63ee921963f",
+    "name": "MQTT In (ChirpStack events)",
+    "topic": "application/+/device/+/event/#",
+    "qos": "0",
+    "datatype": "auto",
+    "broker": "bkr_mqtt_pg",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 160,
+    "y": 300,
+    "wires": [
+      [
+        "1ed69a94c44e02a0"
+      ]
+    ]
+  },
+  {
+    "id": "a6fe0b1eaf258827",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.ingest.parse_json_zigbee_tolerant",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.ingest || typeof domain.ingest.parseJsonZigbeeTolerant !== 'function') {\n  node.error('domain.ingest.parseJsonZigbeeTolerant is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.ingest.parseJsonZigbeeTolerant(msg);\n",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 470,
+    "y": 240,
+    "wires": [
+      [
+        "40d558481cad3db6"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "1ed69a94c44e02a0",
+    "type": "json",
+    "z": "8350c63ee921963f",
+    "name": "JSON parse (LoRa)",
+    "property": "payload",
+    "action": "obj",
+    "pretty": false,
+    "x": 430,
+    "y": 300,
+    "wires": [
+      [
+        "40d558481cad3db6"
+      ]
+    ]
+  },
+  {
+    "id": "40d558481cad3db6",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.ingest.normalize_mqtt",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.ingest || typeof domain.ingest.normalizeMqtt !== 'function') {\n  node.error('domain.ingest.normalizeMqtt is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.ingest.normalizeMqtt(msg, flow);\n",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 770,
+    "y": 260,
+    "wires": [
+      [
+        "281e164c860e96ee",
+        "cfdf5de51b5addff",
+        "c4a7252d6e8f4b11"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "cfdf5de51b5addff",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.update_activity_histogram",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.updateActivityHistogram !== 'function') {\n  node.error('domain.dashboard.updateActivityHistogram is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.updateActivityHistogram(msg, flow);\n",
+    "outputs": 1,
+    "timeout": "",
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1070,
+    "y": 340,
+    "wires": [
+      [
+        "baa340c8c171b714"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "2f98b1d0b7c24c2f",
+    "type": "ui-dropdown",
+    "z": "8350c63ee921963f",
+    "group": "42c0c2f1b07f4b06",
+    "name": "Activity source",
+    "label": "Source",
+    "tooltip": "",
+    "order": 2,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "multiple": false,
+    "chips": false,
+    "clearable": false,
+    "options": [
+      {
+        "label": "Both",
+        "value": "both",
+        "type": "str"
+      },
+      {
+        "label": "Zigbee",
+        "value": "zigbee",
+        "type": "str"
+      },
+      {
+        "label": "LoRaWAN",
+        "value": "lorawan",
+        "type": "str"
+      }
+    ],
+    "payload": "both",
+    "topic": "topic",
+    "topicType": "msg",
+    "className": "",
+    "typeIsComboBox": true,
+    "msgTrigger": "onChange",
+    "x": 420,
+    "y": 540,
+    "wires": [
+      [
+        "f5bb859ed1b03d1f"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "f5bb859ed1b03d1f",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.set_activity_source",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.setActivitySource !== 'function') {\n  node.error('domain.dashboard.setActivitySource is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.setActivitySource(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 690,
+    "y": 540,
+    "wires": [
+      [
+        "b8a7f6e5d4c3b2a1"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "f4f7c4a2c8d3d6c1",
+    "type": "ui-dropdown",
+    "z": "8350c63ee921963f",
+    "group": "42c0c2f1b07f4b06",
+    "name": "Activity range",
+    "label": "Range",
+    "tooltip": "",
+    "order": 3,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "multiple": false,
+    "chips": false,
+    "clearable": false,
+    "options": [
+      {
+        "label": "Last 1 hour",
+        "value": "1h",
+        "type": "str"
+      },
+      {
+        "label": "Last 24 hours",
+        "value": "24h",
+        "type": "str"
+      },
+      {
+        "label": "Last 7 days",
+        "value": "7d",
+        "type": "str"
+      }
+    ],
+    "payload": "1h",
+    "topic": "topic",
+    "topicType": "msg",
+    "className": "",
+    "typeIsComboBox": true,
+    "msgTrigger": "onChange",
+    "x": 420,
+    "y": 620,
+    "wires": [
+      [
+        "b5f6c3d1e2a4f7b8"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "b5f6c3d1e2a4f7b8",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.set_activity_range",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.setActivityRange !== 'function') {\n  node.error('domain.dashboard.setActivityRange is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.setActivityRange(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 690,
+    "y": 620,
+    "wires": [
+      [
+        "b8a7f6e5d4c3b2a1"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "d7b2c5a1e4f8b3c6",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Auto refresh activity",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 1,
+    "topic": "",
+    "payloadType": "date",
+    "x": 680,
+    "y": 680,
+    "wires": [
+      [
+        "b8a7f6e5d4c3b2a1"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "b8a7f6e5d4c3b2a1",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_activity_complete_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildActivityCompleteQuery !== 'function') {\n  node.error('repo.dashboard.buildActivityCompleteQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildActivityCompleteQuery(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1000,
+    "y": 620,
+    "wires": [
+      [
+        "d2b5039a3ad0b0e9"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "7b41f1c1fb4a4e90",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Refresh activity (record)",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 1,
+    "topic": "",
+    "payloadType": "date",
+    "x": 190,
+    "y": 1900,
+    "wires": [
+      [
+        "b6c0b4e6a80c63d1"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "b6c0b4e6a80c63d1",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query activity (record)",
+    "query": "SELECT date_trunc('minute', ts) AS bucket,\n       count(*) AS events\nFROM poc.telemetry\nWHERE ts >= now() - interval '1 hour'\nGROUP BY bucket\nORDER BY bucket;",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "100",
+    "outputs": 1,
+    "x": 500,
+    "y": 1900,
+    "wires": [
+      [
+        "6f18c6788b6d7dd4"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "6f18c6788b6d7dd4",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.build_activity_chart_points",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.buildActivityChartPoints !== 'function') {\n  node.error('domain.dashboard.buildActivityChartPoints is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.buildActivityChartPoints(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 770,
+    "y": 1900,
+    "wires": [
+      [
+        "9d4e7b4e4a7a7a53"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "d2b5039a3ad0b0e9",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query activity (complete)",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1000",
+    "outputs": 1,
+    "x": 1250,
+    "y": 620,
+    "wires": [
+      [
+        "55dfac0a4fe13584"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "55dfac0a4fe13584",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.build_activity_chart_points",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.buildActivityChartPoints !== 'function') {\n  node.error('domain.dashboard.buildActivityChartPoints is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.buildActivityChartPoints(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1520,
+    "y": 620,
+    "wires": [
+      [
+        "f9f0a5b0a5f48a9c"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "281e164c860e96ee",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.devices.build_upsert_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.devices || typeof repo.devices.buildUpsertQuery !== 'function') {\n  node.error('repo.devices.buildUpsertQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.devices.buildUpsertQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1080,
+    "y": 260,
+    "wires": [
+      [
+        "7c0990bcbebdeaad"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "7c0990bcbebdeaad",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.devices.execute_upsert",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 1360,
+    "y": 260,
+    "wires": [
+      [
+        "014f2b8fe99b97fe"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "014f2b8fe99b97fe",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.telemetry.build_insert_raw_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.telemetry || typeof repo.telemetry.buildInsertRawQuery !== 'function') {\n  node.error('repo.telemetry.buildInsertRawQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.telemetry.buildInsertRawQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1660,
+    "y": 260,
+    "wires": [
+      [
+        "1e28fb88cb6b4b16",
+        "af4eab925dd532d1",
+        "domain_extract_all_fields"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "1e28fb88cb6b4b16",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.telemetry.execute_insert_raw",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 2000,
+    "y": 260,
+    "wires": [
+      [
+        "01541a7a87ea3f4d",
+        "repo_metrics_build_mapping_lookup"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "01541a7a87ea3f4d",
+    "type": "debug",
+    "z": "8350c63ee921963f",
+    "name": "DB insert result",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "pgsql.command",
+    "statusType": "msg",
+    "x": 2240,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "af4eab925dd532d1",
+    "type": "debug",
+    "z": "8350c63ee921963f",
+    "name": "Debug (envelope)",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "poc",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1990,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "baa340c8c171b714",
+    "type": "ui-chart",
+    "z": "8350c63ee921963f",
+    "group": "73686f037df2c0ae",
+    "name": "Activity histogram",
+    "label": "Activity per minute (last hour)",
+    "order": 1,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "",
+    "xAxisProperty": "timestamp",
+    "xAxisPropertyType": "msg",
+    "xAxisType": "time",
+    "xAxisFormat": "",
+    "xAxisFormatType": "auto",
+    "xmin": "",
+    "xmax": "",
+    "yAxisLabel": "",
+    "yAxisProperty": "payload",
+    "yAxisPropertyType": "msg",
+    "ymin": "",
+    "ymax": "",
+    "bins": "",
+    "stackSeries": false,
+    "pointRadius": "",
+    "showLegend": true,
+    "removeOlder": "0",
+    "removeOlderUnit": "minute",
+    "removeOlderPoints": "",
+    "colors": [
+      "#1f77b4",
+      "#aec7e8",
+      "#ff7f0e",
+      "#2ca02c",
+      "#98df8a",
+      "#d62728",
+      "#ff9896",
+      "#9467bd",
+      "#c5b0d5"
+    ],
+    "textColor": "",
+    "textColorDefault": true,
+    "gridColor": "",
+    "gridColorDefault": true,
+    "width": 12,
+    "height": 6,
+    "className": "",
+    "interpolation": "linear",
+    "x": 1350,
+    "y": 340,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "9d4e7b4e4a7a7a53",
+    "type": "ui-chart",
+    "z": "8350c63ee921963f",
+    "group": "d0f0b16df9a0491b",
+    "name": "Activity histogram (record)",
+    "label": "Recorded activity per minute",
+    "order": 1,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "",
+    "xAxisProperty": "x",
+    "xAxisPropertyType": "property",
+    "xAxisType": "time",
+    "xAxisFormat": "",
+    "xAxisFormatType": "auto",
+    "xmin": "",
+    "xmax": "",
+    "yAxisLabel": "",
+    "yAxisProperty": "y",
+    "yAxisPropertyType": "property",
+    "ymin": "",
+    "ymax": "",
+    "bins": "",
+    "action": "replace",
+    "stackSeries": false,
+    "pointRadius": "",
+    "showLegend": true,
+    "removeOlder": "60",
+    "removeOlderUnit": "minute",
+    "removeOlderPoints": "",
+    "colors": [
+      "#1f77b4",
+      "#aec7e8",
+      "#ff7f0e",
+      "#2ca02c",
+      "#98df8a",
+      "#d62728",
+      "#ff9896",
+      "#9467bd",
+      "#c5b0d5"
+    ],
+    "textColor": "",
+    "textColorDefault": true,
+    "gridColor": "",
+    "gridColorDefault": true,
+    "width": 12,
+    "height": 6,
+    "className": "",
+    "interpolation": "linear",
+    "x": 1670,
+    "y": 1900,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "f9f0a5b0a5f48a9c",
+    "type": "ui-chart",
+    "z": "8350c63ee921963f",
+    "group": "42c0c2f1b07f4b06",
+    "name": "Activity histogram (complete)",
+    "label": "Complete activity per minute",
+    "order": 1,
+    "chartType": "line",
+    "category": "topic",
+    "categoryType": "msg",
+    "xAxisLabel": "",
+    "xAxisProperty": "x",
+    "xAxisPropertyType": "property",
+    "xAxisType": "time",
+    "xAxisFormat": "",
+    "xAxisFormatType": "auto",
+    "xmin": "",
+    "xmax": "",
+    "yAxisLabel": "",
+    "yAxisProperty": "y",
+    "yAxisPropertyType": "property",
+    "ymin": "",
+    "ymax": "",
+    "bins": "",
+    "action": "replace",
+    "stackSeries": false,
+    "pointRadius": "",
+    "showLegend": true,
+    "removeOlder": "60",
+    "removeOlderUnit": "minute",
+    "removeOlderPoints": "",
+    "colors": [
+      "#1f77b4",
+      "#aec7e8",
+      "#ff7f0e",
+      "#2ca02c",
+      "#98df8a",
+      "#d62728",
+      "#ff9896",
+      "#9467bd",
+      "#c5b0d5"
+    ],
+    "textColor": "",
+    "textColorDefault": true,
+    "gridColor": "",
+    "gridColorDefault": true,
+    "width": 12,
+    "height": 6,
+    "className": "",
+    "interpolation": "linear",
+    "x": 1820,
+    "y": 620,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "6934769a35a4061a",
+    "type": "mqtt out",
+    "z": "8350c63ee921963f",
+    "name": "MQTT Out (commands)",
+    "topic": "",
+    "qos": "",
+    "retain": "",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "bkr_mqtt_pg",
+    "x": 1410,
+    "y": 1500,
+    "wires": []
+  },
+  {
+    "id": "tpl_all_devices",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_all_devices",
+    "name": "All devices list",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div>\n    <h3>All devices with received data</h3>\n\n    <div style=\"display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;\">\n      <button @click=\"refreshReferences\" :disabled=\"loadingReferences\">Refresh reference list</button>\n      <span v-if=\"loadingReferences\" style=\"color:#666;\">Loading references...</span>\n    </div>\n\n    <div v-if=\"error\" style=\"margin-bottom:10px;color:#c62828;font-weight:600;\">{{ error }}</div>\n    <div v-if=\"notice\" style=\"margin-bottom:10px;color:#2e7d32;font-weight:600;\">{{ notice }}</div>\n\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <tr>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Device</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Network</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Status</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Device reference</th>\n      </tr>\n      <tr v-for=\"row in rows\" :key=\"String(row.deviceId)\">\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <div>{{ row.device }}</div>\n          <div style=\"color:#666;font-size:12px;\">external_id: {{ row.externalId }}</div>\n          <div style=\"color:#666;font-size:12px;\">device_id: {{ row.deviceId }}</div>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ row.network }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <span v-if=\"row.lastTs\">\n            <span v-if=\"row.online\" style=\"color:#2e7d32;font-weight:600;\">Online ({{ fmtLocal(row.lastTs) }})</span>\n            <span v-else style=\"color:#c62828;font-weight:600;\">Offline (last seen {{ fmtLocal(row.lastTs) }})</span>\n          </span>\n          <span v-else>n/a</span>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:340px;\">\n          <div style=\"margin-bottom:6px;\">\n            <strong>Current:</strong> {{ referenceLabel(row) }}\n          </div>\n          <div style=\"display:flex;gap:6px;align-items:center;flex-wrap:wrap;\">\n            <select v-model=\"selectedReferenceByDevice[row.deviceId]\" style=\"flex:1 1 210px;\">\n              <option value=\"\">Select reference</option>\n              <option\n                v-for=\"ref in referencesFor(row.network)\"\n                :key=\"String(row.deviceId) + '-' + String(ref.id)\"\n                :value=\"String(ref.id)\"\n              >\n                {{ referenceOptionLabel(ref) }}\n              </option>\n            </select>\n            <button\n              @click=\"assignReference(row)\"\n              :disabled=\"loadingAssignDeviceId === row.deviceId || !canAssign(row)\"\n              :style=\"assignButtonStyle(row)\"\n            >\n              {{ assignButtonLabel(row) }}\n            </button>\n          </div>\n        </td>\n      </tr>\n    </table>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      loadingReferences: false,\n      loadingAssignDeviceId: null,\n      error: '',\n      notice: '',\n      references: [],\n      selectedReferenceByDevice: {}\n    };\n  },\n  computed: {\n    rows() {\n      return Array.isArray(this.msg && this.msg.payload) ? this.msg.payload : [];\n    }\n  },\n  watch: {\n    rows: {\n      handler() {\n        this.seedSelections();\n      },\n      deep: true,\n      immediate: true\n    }\n  },\n  mounted() {\n    this.refreshReferences();\n  },\n  methods: {\n    fmtLocal(ts) {\n      if (!ts) return 'n/a';\n      return new Date(ts).toLocaleString('fr-FR');\n    },\n    referenceOptionLabel(ref) {\n      const display = ref && ref.referenceDisplayName ? String(ref.referenceDisplayName) : '';\n      const key = ref && ref.referenceKey ? String(ref.referenceKey) : '';\n      if (display && key && display !== key) {\n        return display + ' (' + key + ')';\n      }\n      return display || key || ('reference #' + String(ref && ref.id ? ref.id : 'n/a'));\n    },\n    referenceLabel(row) {\n      const display = row && row.currentReferenceDisplayName ? row.currentReferenceDisplayName : null;\n      const key = row && row.currentReferenceKey ? row.currentReferenceKey : null;\n      if (display && key && display !== key) {\n        return display + ' (' + key + ')';\n      }\n      if (display) {\n        return display;\n      }\n      if (key) {\n        return key;\n      }\n      return 'Unlinked';\n    },\n    referencesFor(network) {\n      return this.references.filter((ref) => ref.network === network);\n    },\n    seedSelections() {\n      for (const row of this.rows) {\n        const deviceId = row.deviceId;\n        if (!this.selectedReferenceByDevice[deviceId] && row.currentReferenceId) {\n          this.selectedReferenceByDevice[deviceId] = String(row.currentReferenceId);\n        }\n      }\n    },\n    selectedReferenceId(row) {\n      const raw = this.selectedReferenceByDevice[row.deviceId];\n      const n = Number(raw);\n      return Number.isInteger(n) && n > 0 ? n : null;\n    },\n    canAssign(row) {\n      const selected = this.selectedReferenceId(row);\n      if (!selected) {\n        return false;\n      }\n      const current = Number(row.currentReferenceId);\n      if (Number.isInteger(current) && current > 0 && current === selected) {\n        return false;\n      }\n      return true;\n    },\n    assignButtonLabel(row) {\n      const hasCurrent = Number.isInteger(Number(row.currentReferenceId)) && Number(row.currentReferenceId) > 0;\n      return hasCurrent ? 'Re-assign' : 'Assign';\n    },\n    assignButtonStyle(row) {\n      const enabled = this.loadingAssignDeviceId !== row.deviceId && this.canAssign(row);\n      if (enabled) {\n        return {\n          background: '#1565c0',\n          color: '#fff',\n          border: '1px solid #0d47a1',\n          borderRadius: '4px',\n          padding: '4px 10px',\n          cursor: 'pointer'\n        };\n      }\n      return {\n        background: '#e0e0e0',\n        color: '#757575',\n        border: '1px solid #c7c7c7',\n        borderRadius: '4px',\n        padding: '4px 10px',\n        cursor: 'not-allowed',\n        opacity: '0.95'\n      };\n    },\n    async requestJson(url, options = {}) {\n      const cfg = {\n        method: options.method || 'GET',\n        headers: { 'Content-Type': 'application/json' }\n      };\n      if (options.body !== undefined) {\n        cfg.body = JSON.stringify(options.body);\n      }\n\n      const response = await fetch(url, cfg);\n      let payload = null;\n      try {\n        payload = await response.json();\n      } catch (err) {\n        payload = null;\n      }\n\n      if (!response.ok) {\n        const message = payload && payload.error && payload.error.message ? payload.error.message : ('HTTP ' + response.status);\n        throw new Error(message);\n      }\n\n      return payload || { ok: true, data: null };\n    },\n    async refreshReferences() {\n      this.loadingReferences = true;\n      this.error = '';\n      try {\n        const res = await this.requestJson('/api/v1/device-references');\n        this.references = Array.isArray(res.data) ? res.data : [];\n        this.seedSelections();\n      } catch (err) {\n        this.error = err.message || 'Failed to load references';\n      } finally {\n        this.loadingReferences = false;\n      }\n    },\n    async assignReference(row) {\n      const deviceId = row.deviceId;\n      const referenceId = this.selectedReferenceId(row);\n\n      if (!referenceId) {\n        this.error = 'Please select a valid reference before assigning.';\n        return;\n      }\n\n      this.loadingAssignDeviceId = deviceId;\n      this.error = '';\n      this.notice = '';\n\n      try {\n        await this.requestJson('/api/v1/device-reference-links', {\n          method: 'POST',\n          body: {\n            device_id: deviceId,\n            reference_id: referenceId\n          }\n        });\n\n        const linkedRef = this.references.find((ref) => Number(ref.id) === referenceId) || null;\n        row.currentReferenceId = referenceId;\n        row.currentReferenceDisplayName = linkedRef ? (linkedRef.referenceDisplayName || null) : row.currentReferenceDisplayName;\n        row.currentReferenceKey = linkedRef ? (linkedRef.referenceKey || null) : row.currentReferenceKey;\n\n        this.notice = 'Device ' + deviceId + ' linked to reference ' + referenceId + '.';\n      } catch (err) {\n        this.error = err.message || 'Failed to assign reference';\n      } finally {\n        this.loadingAssignDeviceId = null;\n      }\n    }\n  }\n};\n</script>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1160,
+    "y": 120,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "tpl_event_changes",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_event_changes",
+    "name": "Event sensor changes view",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div>\n    <h3>Last 5 event changes per device</h3>\n\n    <section\n      v-for=\"item in items\"\n      :key=\"item.id\"\n      style=\"margin-bottom:12px;padding:8px;border:1px solid #ddd;border-radius:6px;\"\n    >\n      <strong>{{ item.label || item.id }}</strong><br/>\n      <div style=\"margin:4px 0;\">\n        <span v-if=\"item.lastTs\">\n          <span v-if=\"item.online\" style=\"color:#2e7d32;font-weight:600;\">Status: Online</span>\n          <span v-else style=\"color:#c62828;font-weight:600;\">Status: Offline</span>\n          <span style=\"color:#666;\"> (last seen {{ fmtLocal(item.lastTs) }})</span>\n        </span>\n        <span v-else style=\"color:#666;\">Status: No data</span>\n      </div>\n\n      <div v-if=\"latestEvent(item)\" style=\"margin:6px 0 8px 0;padding:6px 8px;border:1px solid #90caf9;border-radius:6px;background:#e8f2ff;\">\n        Current state: <strong>{{ fmtValue(latestEvent(item).newValue) }}</strong>\n        <span style=\"color:#444;\"> ({{ fmtEventName(latestEvent(item).metricKey) }})</span>\n      </div>\n\n      <div v-if=\"!item.events || item.events.length === 0\">No status change found yet.</div>\n      <ul v-else style=\"list-style:none;padding-left:0;margin:0;\">\n        <li\n          v-for=\"(e, idx) in item.events\"\n          :key=\"item.id + '-' + idx\"\n          :style=\"eventItemStyle(idx)\"\n        >\n          <span v-if=\"idx === 0\" style=\"display:inline-block;margin-right:6px;padding:1px 6px;border-radius:10px;background:#1565c0;color:#fff;font-size:11px;font-weight:600;\">Latest</span>\n          Event <strong>{{ fmtEventName(e.metricKey) }}</strong>\n          <span style=\"color:#666;\">({{ e.metricKey }})</span>:\n          {{ fmtValue(e.oldValue) }} -> {{ fmtValue(e.newValue) }} at {{ fmtLocal(e.ts) }}\n        </li>\n      </ul>\n    </section>\n  </div>\n</template>\n\n<script>\nexport default {\n  computed: {\n    items() {\n      return Array.isArray(this.msg?.payload) ? this.msg.payload : [];\n    }\n  },\n  methods: {\n    fmtLocal(ts) {\n      if (!ts) return 'n/a';\n      return new Date(ts).toLocaleString('fr-FR');\n    },\n    fmtEventName(metricKey) {\n      const raw = String(metricKey || '').trim();\n      if (!raw) {\n        return 'Unknown event';\n      }\n      return raw\n        .replace(/[._]+/g, ' ')\n        .replace(/\\s+/g, ' ')\n        .trim();\n    },\n    fmtValue(value) {\n      if (value === null || value === undefined) {\n        return 'n/a';\n      }\n      if (typeof value === 'object') {\n        try {\n          return JSON.stringify(value);\n        } catch (err) {\n          return String(value);\n        }\n      }\n      return String(value);\n    },\n    latestEvent(item) {\n      if (!item || !Array.isArray(item.events) || item.events.length === 0) {\n        return null;\n      }\n      return item.events[0] || null;\n    },\n    eventItemStyle(idx) {\n      if (idx === 0) {\n        return {\n          marginBottom: '6px',\n          padding: '6px 8px',\n          border: '1px solid #90caf9',\n          borderRadius: '6px',\n          background: '#f5faff',\n          fontWeight: '600'\n        };\n      }\n      return {\n        marginBottom: '4px',\n        padding: '4px 0'\n      };\n    }\n  }\n}\n</script>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1300,
+    "y": 420,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "tpl_battery",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_battery",
+    "name": "Battery and status view",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div>\n    <h3>Battery and status (latest telemetry)</h3>\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <tr>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Device</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Battery</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Status</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Last data</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Warning</th>\n      </tr>\n      <tr v-for=\"row in rows\" :key=\"row.device\">\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ row.device }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <span\n            :style=\"{ color: 'white', background: row.batteryColor, padding: '2px 8px', borderRadius: '10px' }\"\n          >\n            {{ row.batteryText }}\n          </span>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <span v-if=\"row.lastTs\">\n            <span v-if=\"row.online\" style=\"color:#2e7d32;font-weight:600;\">Online</span>\n            <span v-else style=\"color:#c62828;font-weight:600;\">Offline</span>\n          </span>\n          <span v-else style=\"color:#666;\">No data</span>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ fmtLocal(row.lastTs) }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <span :style=\"{ color: row.warningColor || '#666', fontWeight: row.warningColor ? '600' : 'normal' }\">{{ row.warning }}</span>\n        </td>\n      </tr>\n    </table>\n  </div>\n</template>\n\n<script>\nexport default {\n  computed: {\n    rows() {\n      return Array.isArray(this.msg?.payload) ? this.msg.payload : [];\n    }\n  },\n  methods: {\n    fmtLocal(ts) {\n      if (!ts) return 'n/a';\n      return new Date(ts).toLocaleString('fr-FR');\n    }\n  }\n}\n</script>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1280,
+    "y": 1820,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "dd_periodic_range",
+    "type": "ui-dropdown",
+    "z": "8350c63ee921963f",
+    "group": "grp_periodic_filters",
+    "name": "Periodic range",
+    "label": "Range",
+    "tooltip": "",
+    "order": 1,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "multiple": false,
+    "chips": false,
+    "clearable": false,
+    "options": [
+      {
+        "label": "Last 1 Hour",
+        "value": "1h",
+        "type": "str"
+      },
+      {
+        "label": "Last 6 Hours",
+        "value": "6h",
+        "type": "str"
+      },
+      {
+        "label": "Last 24H",
+        "value": "24h",
+        "type": "str"
+      },
+      {
+        "label": "Last week",
+        "value": "7d",
+        "type": "str"
+      }
+    ],
+    "payload": "1h",
+    "topic": "topic",
+    "topicType": "msg",
+    "className": "",
+    "typeIsComboBox": true,
+    "msgTrigger": "onChange",
+    "x": 140,
+    "y": 760,
+    "wires": [
+      [
+        "fn_set_periodic_range"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "dd_periodic_bucket",
+    "type": "ui-dropdown",
+    "z": "8350c63ee921963f",
+    "group": "grp_periodic_filters",
+    "name": "Periodic bucket",
+    "label": "Bucket",
+    "tooltip": "",
+    "order": 2,
+    "width": 6,
+    "height": 1,
+    "passthru": true,
+    "multiple": false,
+    "chips": false,
+    "clearable": false,
+    "options": [
+      {
+        "label": "Auto",
+        "value": "auto",
+        "type": "str"
+      },
+      {
+        "label": "1 minute",
+        "value": "1 minute",
+        "type": "str"
+      },
+      {
+        "label": "5 minutes",
+        "value": "5 minutes",
+        "type": "str"
+      },
+      {
+        "label": "15 minutes",
+        "value": "15 minutes",
+        "type": "str"
+      },
+      {
+        "label": "1 hour",
+        "value": "1 hour",
+        "type": "str"
+      }
+    ],
+    "payload": "auto",
+    "topic": "topic",
+    "topicType": "msg",
+    "className": "",
+    "typeIsComboBox": true,
+    "msgTrigger": "onChange",
+    "x": 140,
+    "y": 800,
+    "wires": [
+      [
+        "fn_set_periodic_bucket"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "chart_periodic_th",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_periodic_th",
+    "name": "Periodic metrics by device",
+    "order": 1,
+    "format": "<template>\n  <div>\n    <h3>Periodic metrics</h3>\n    <div v-if=\"!devices.length\" style=\"color:#666;\">No mapped periodic metrics found.</div>\n\n    <section\n      v-for=\"device in devices\"\n      :key=\"device.deviceId\"\n      style=\"margin-bottom:14px;padding:10px;border:1px solid #ddd;border-radius:6px;\"\n    >\n      <h4 style=\"margin:0 0 8px 0;\">{{ device.deviceLabel }}</h4>\n      <div v-if=\"!device.metrics || device.metrics.length === 0\" style=\"color:#666;\">No periodic metric for this device.</div>\n\n      <div\n        v-for=\"(metric, metricIdx) in device.metrics\"\n        :key=\"device.deviceId + '-' + metric.metricName + '-' + (metric.unit || '') + '-' + (metric.metricType || '')\"\n        style=\"margin-bottom:14px;\"\n      >\n        <div style=\"display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;\">\n          <strong>{{ metricLabel(metric) }}</strong>\n          <span style=\"font-size:12px;color:#666;\">{{ latestLabel(metric.points) }}</span>\n        </div>\n        <div v-if=\"metric.metricType === 'text' && metric.categories && metric.categories.length\" style=\"font-size:12px;color:#666;margin:2px 0 6px 0;\">\n          Categories: {{ metric.categories.join(', ') }}\n        </div>\n        <div v-else-if=\"metric.metricType === 'boolean'\" style=\"font-size:12px;color:#666;margin:2px 0 6px 0;\">\n          States: false / true\n        </div>\n\n        <canvas\n          :ref=\"canvasRefKey(device, metric, metricIdx)\"\n          style=\"display:block;width:100%;height:240px;background:#fafbfc;border:1px solid #e1e5ea;border-radius:4px;\"\n        ></canvas>\n      </div>\n    </section>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      drawRaf: null\n    };\n  },\n  computed: {\n    devices() {\n      return Array.isArray(this.msg && this.msg.payload) ? this.msg.payload : [];\n    },\n    selectedRange() {\n      return String((this.msg && this.msg.periodicRange) || '1h');\n    }\n  },\n  watch: {\n    msg: {\n      handler() {\n        this.scheduleDraw();\n      },\n      deep: true\n    }\n  },\n  mounted() {\n    this._onResize = () => this.scheduleDraw();\n    window.addEventListener('resize', this._onResize);\n    this.scheduleDraw();\n  },\n  beforeUnmount() {\n    if (this._onResize) {\n      window.removeEventListener('resize', this._onResize);\n    }\n    if (this.drawRaf) {\n      cancelAnimationFrame(this.drawRaf);\n      this.drawRaf = null;\n    }\n  },\n  updated() {\n    this.scheduleDraw();\n  },\n  methods: {\n    scheduleDraw() {\n      if (this.drawRaf) {\n        cancelAnimationFrame(this.drawRaf);\n      }\n      this.drawRaf = requestAnimationFrame(() => {\n        this.drawRaf = null;\n        this.renderAllCharts();\n      });\n    },\n    canvasRefKey(device, metric, metricIdx) {\n      return 'periodic_' + String(device && device.deviceId || 'dev') + '_' + String(metricIdx);\n    },\n    metricLabel(metric) {\n      if (!metric) return 'metric';\n      const base = metric.unit ? (metric.metricName + ' (' + metric.unit + ')') : metric.metricName;\n      if (metric.metricType === 'boolean' || metric.metricType === 'text') {\n        return base + ' [' + metric.metricType + ']';\n      }\n      return base;\n    },\n    latestLabel(points) {\n      const list = Array.isArray(points) ? points : [];\n      if (list.length === 0) return 'no points';\n      const last = list[list.length - 1];\n      if (!last || !Number.isFinite(Number(last.y))) return 'no points';\n      const value = (last.label !== undefined && last.label !== null && String(last.label).trim() !== '')\n        ? String(last.label)\n        : Number(last.y).toFixed(2);\n      const ts = last.x ? new Date(last.x).toLocaleString('fr-FR') : 'n/a';\n      return value + ' at ' + ts;\n    },\n    rangeMs() {\n      if (this.selectedRange === '6h') return 6 * 60 * 60 * 1000;\n      if (this.selectedRange === '24h') return 24 * 60 * 60 * 1000;\n      if (this.selectedRange === '7d') return 7 * 24 * 60 * 60 * 1000;\n      return 60 * 60 * 1000;\n    },\n    xDomain() {\n      const fallbackEnd = Date.now();\n      const end = Number(this.msg && this.msg.periodicWindowEndMs);\n      const max = Number.isFinite(end) ? end : fallbackEnd;\n      const start = Number(this.msg && this.msg.periodicWindowStartMs);\n      const min = Number.isFinite(start) ? start : (max - this.rangeMs());\n      if (max <= min) {\n        return { min: max - this.rangeMs(), max };\n      }\n      return { min, max };\n    },\n    normalizedPoints(points) {\n      return (Array.isArray(points) ? points : [])\n        .map((p) => ({ x: Number(p && p.x), y: Number(p && p.y), label: p && p.label }))\n        .filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y))\n        .sort((a, b) => a.x - b.x);\n    },\n    visiblePoints(metric) {\n      const domain = this.xDomain();\n      return this.normalizedPoints(metric && metric.points)\n        .filter((p) => p.x >= domain.min && p.x <= domain.max);\n    },\n    yDomain(metric) {\n      const type = String(metric && metric.metricType || 'number');\n      const points = this.normalizedPoints(metric && metric.points);\n\n      if (type === 'boolean') {\n        return {\n          min: -0.1,\n          max: 1.1,\n          ticks: [\n            { value: 0, label: 'false' },\n            { value: 1, label: 'true' }\n          ]\n        };\n      }\n\n      if (type === 'text') {\n        const categories = Array.isArray(metric && metric.categories) ? metric.categories : [];\n        if (categories.length === 0) {\n          return {\n            min: -0.5,\n            max: 0.5,\n            ticks: [{ value: 0, label: 'n/a' }]\n          };\n        }\n        const maxIndex = Math.max(categories.length - 1, 0);\n        return {\n          min: -0.5,\n          max: maxIndex + 0.5,\n          ticks: categories.map((label, index) => ({ value: index, label: String(label) }))\n        };\n      }\n\n      if (!points.length) {\n        return {\n          min: 0,\n          max: 1,\n          ticks: [\n            { value: 0, label: '0' },\n            { value: 0.25, label: '0.25' },\n            { value: 0.5, label: '0.5' },\n            { value: 0.75, label: '0.75' },\n            { value: 1, label: '1' }\n          ]\n        };\n      }\n\n      let min = points[0].y;\n      let max = points[0].y;\n      for (const p of points) {\n        if (p.y < min) min = p.y;\n        if (p.y > max) max = p.y;\n      }\n      if (max <= min) {\n        const pad = Math.max(1, Math.abs(min) * 0.1);\n        min -= pad;\n        max += pad;\n      } else {\n        const pad = (max - min) * 0.08;\n        min -= pad;\n        max += pad;\n      }\n\n      const steps = 4;\n      const tickStep = (max - min) / steps;\n      const ticks = [];\n      for (let i = 0; i <= steps; i += 1) {\n        const value = min + (tickStep * i);\n        ticks.push({ value, label: this.formatNumber(value) });\n      }\n      return { min, max, ticks };\n    },\n    xTicks() {\n      const domain = this.xDomain();\n      const span = domain.max - domain.min;\n      const steps = 4;\n      const ticks = [];\n      for (let i = 0; i <= steps; i += 1) {\n        const value = domain.min + ((span / steps) * i);\n        ticks.push({ value, label: this.formatTime(value, span) });\n      }\n      return ticks;\n    },\n    formatTime(ts, span) {\n      const date = new Date(ts);\n      if (span >= (2 * 24 * 60 * 60 * 1000)) {\n        return date.toLocaleString('fr-FR', {\n          day: '2-digit',\n          month: '2-digit',\n          hour: '2-digit',\n          minute: '2-digit'\n        });\n      }\n      return date.toLocaleTimeString('fr-FR', {\n        hour: '2-digit',\n        minute: '2-digit'\n      });\n    },\n    formatNumber(value) {\n      const n = Number(value);\n      if (!Number.isFinite(n)) return '';\n      if (Math.abs(n) >= 1000) return n.toFixed(0);\n      if (Math.abs(n) >= 100) return n.toFixed(1);\n      return n.toFixed(2);\n    },\n    markerPoints(metric) {\n      const type = String(metric && metric.metricType || 'number');\n      const points = this.visiblePoints(metric);\n      if (!points.length) return [];\n\n      if (type === 'number' || type === 'integer') {\n        return points;\n      }\n\n      const markers = [points[0]];\n      for (let i = 1; i < points.length; i += 1) {\n        const prev = points[i - 1];\n        const curr = points[i];\n        if (curr.x === prev.x) {\n          markers.push(curr);\n        }\n      }\n      return markers;\n    },\n    renderAllCharts() {\n      const devices = this.devices;\n      for (const device of devices) {\n        const metrics = Array.isArray(device && device.metrics) ? device.metrics : [];\n        for (let i = 0; i < metrics.length; i += 1) {\n          const metric = metrics[i];\n          const refKey = this.canvasRefKey(device, metric, i);\n          const refValue = this.$refs[refKey];\n          const canvas = Array.isArray(refValue) ? refValue[0] : refValue;\n          if (canvas && canvas.getContext) {\n            this.renderMetricChart(canvas, metric);\n          }\n        }\n      }\n    },\n    renderMetricChart(canvas, metric) {\n      const ctx = canvas.getContext('2d');\n      if (!ctx) return;\n\n      const rect = canvas.getBoundingClientRect();\n      const cssW = Math.max(320, Math.floor(rect.width || 800));\n      const cssH = 240;\n      const dpr = Math.max(1, window.devicePixelRatio || 1);\n      canvas.width = Math.floor(cssW * dpr);\n      canvas.height = Math.floor(cssH * dpr);\n      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);\n      ctx.clearRect(0, 0, cssW, cssH);\n\n      const pad = { left: 56, right: 14, top: 14, bottom: 34 };\n      const plotW = Math.max(10, cssW - pad.left - pad.right);\n      const plotH = Math.max(10, cssH - pad.top - pad.bottom);\n\n      const x = this.xDomain();\n      const y = this.yDomain(metric);\n      const xTicks = this.xTicks();\n      const yTicks = y.ticks || [];\n      const points = this.visiblePoints(metric);\n      const markers = this.markerPoints(metric);\n\n      const xScale = (v) => {\n        const ratio = (Number(v) - x.min) / Math.max(1, x.max - x.min);\n        return pad.left + (Math.max(0, Math.min(1, ratio)) * plotW);\n      };\n      const yScale = (v) => {\n        const ratio = (Number(v) - y.min) / Math.max(1e-9, y.max - y.min);\n        return pad.top + plotH - (Math.max(0, Math.min(1, ratio)) * plotH);\n      };\n\n      ctx.fillStyle = '#fafbfc';\n      ctx.fillRect(0, 0, cssW, cssH);\n\n      ctx.strokeStyle = '#eef2f6';\n      ctx.lineWidth = 1;\n      for (const t of xTicks) {\n        const xx = xScale(t.value);\n        ctx.beginPath();\n        ctx.moveTo(xx, pad.top);\n        ctx.lineTo(xx, pad.top + plotH);\n        ctx.stroke();\n      }\n      for (const t of yTicks) {\n        const yy = yScale(t.value);\n        ctx.beginPath();\n        ctx.moveTo(pad.left, yy);\n        ctx.lineTo(pad.left + plotW, yy);\n        ctx.stroke();\n      }\n\n      ctx.strokeStyle = '#9aa7b3';\n      ctx.lineWidth = 1.2;\n      ctx.beginPath();\n      ctx.moveTo(pad.left, pad.top + plotH);\n      ctx.lineTo(pad.left + plotW, pad.top + plotH);\n      ctx.stroke();\n      ctx.beginPath();\n      ctx.moveTo(pad.left, pad.top);\n      ctx.lineTo(pad.left, pad.top + plotH);\n      ctx.stroke();\n\n      if (points.length > 0) {\n        const type = String(metric && metric.metricType || 'number');\n        const plotted = points.slice();\n        if ((type === 'boolean' || type === 'text') && plotted[plotted.length - 1].x < x.max) {\n          const last = plotted[plotted.length - 1];\n          plotted.push({ x: x.max, y: last.y });\n        }\n        if ((type === 'number' || type === 'integer') && plotted.length === 1) {\n          const only = plotted[0];\n          plotted.unshift({ x: x.min, y: only.y });\n        }\n\n        ctx.strokeStyle = '#1565c0';\n        ctx.lineWidth = 2;\n        ctx.beginPath();\n        for (let i = 0; i < plotted.length; i += 1) {\n          const p = plotted[i];\n          const px = xScale(p.x);\n          const py = yScale(p.y);\n          if (i === 0) ctx.moveTo(px, py);\n          else ctx.lineTo(px, py);\n        }\n        ctx.stroke();\n\n        const last = points[points.length - 1];\n        if (last && last.x < x.max) {\n          ctx.save();\n          ctx.strokeStyle = 'rgba(21,101,192,0.65)';\n          ctx.lineWidth = 1.8;\n          ctx.setLineDash([4, 3]);\n          ctx.beginPath();\n          ctx.moveTo(xScale(last.x), yScale(last.y));\n          ctx.lineTo(xScale(x.max), yScale(last.y));\n          ctx.stroke();\n          ctx.restore();\n        }\n\n        for (const p of markers) {\n          ctx.beginPath();\n          ctx.arc(xScale(p.x), yScale(p.y), 2.2, 0, Math.PI * 2);\n          ctx.fillStyle = '#1565c0';\n          ctx.fill();\n          ctx.strokeStyle = '#ffffff';\n          ctx.lineWidth = 0.8;\n          ctx.stroke();\n        }\n      } else {\n        ctx.fillStyle = '#8391a0';\n        ctx.font = '12px sans-serif';\n        ctx.textAlign = 'center';\n        ctx.textBaseline = 'middle';\n        ctx.fillText('No data in selected range', pad.left + (plotW / 2), pad.top + (plotH / 2));\n      }\n\n      ctx.fillStyle = '#2b3946';\n      ctx.font = '11px sans-serif';\n      ctx.textAlign = 'right';\n      ctx.textBaseline = 'middle';\n      for (const t of yTicks) {\n        ctx.fillText(String(t.label), pad.left - 8, yScale(t.value));\n      }\n\n      ctx.fillStyle = '#3b4a57';\n      ctx.font = '11px sans-serif';\n      ctx.textBaseline = 'top';\n      for (let i = 0; i < xTicks.length; i += 1) {\n        const t = xTicks[i];\n        const xx = xScale(t.value);\n        if (i === 0) ctx.textAlign = 'left';\n        else if (i === xTicks.length - 1) ctx.textAlign = 'right';\n        else ctx.textAlign = 'center';\n        ctx.fillText(String(t.label), xx, pad.top + plotH + 6);\n      }\n\n      ctx.fillStyle = '#3b4a57';\n      ctx.font = '700 11px sans-serif';\n      ctx.textAlign = 'center';\n      ctx.textBaseline = 'top';\n      ctx.fillText('Time', pad.left + (plotW / 2), cssH - 14);\n      ctx.textAlign = 'left';\n      ctx.fillText('Value / State', 4, 2);\n    }\n  }\n};\n</script>",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "width": 12,
+    "height": 0,
+    "x": 2100,
+    "y": 740,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "inj_refresh_all_devices",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Refresh all devices",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "2",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 140,
+    "y": 120,
+    "wires": [
+      [
+        "fn_q_all_devices"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_q_all_devices",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_all_devices_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildAllDevicesQuery !== 'function') {\n  node.error('repo.dashboard.buildAllDevicesQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildAllDevicesQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 410,
+    "y": 120,
+    "wires": [
+      [
+        "pg_all_devices_query"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_all_devices_query",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query all devices",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 630,
+    "y": 120,
+    "wires": [
+      [
+        "fn_fmt_all_devices"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_fmt_all_devices",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.format_all_devices",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.formatAllDevices !== 'function') {\n  node.error('domain.dashboard.formatAllDevices is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.formatAllDevices(msg, { env });\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 870,
+    "y": 120,
+    "wires": [
+      [
+        "tpl_all_devices"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "inj_refresh_actuators",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Refresh actuator status",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "3",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 1070,
+    "y": 1260,
+    "wires": [
+      [
+        "fn_q_actuator_status"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_q_actuator_status",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_actuator_status_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildActuatorStatusQuery !== 'function') {\n  node.error('repo.dashboard.buildActuatorStatusQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildActuatorStatusQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1360,
+    "y": 1340,
+    "wires": [
+      [
+        "pg_actuator_status_query"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_actuator_status_query",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query actuator status",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 1640,
+    "y": 1340,
+    "wires": [
+      [
+        "fn_fmt_actuator_status"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_fmt_actuator_status",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.format_actuator_status",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.formatActuatorStatus !== 'function') {\n  node.error('domain.dashboard.formatActuatorStatus is not available in functionGlobalContext');\n  return null;\n}\nconst batteryHelpers = global.get('batteryHelpers') || {};\nreturn domain.dashboard.formatActuatorStatus(msg, { env, batteryHelpers });\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1900,
+    "y": 1340,
+    "wires": [
+      [
+        "tpl_actuator_controls_dynamic"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_prepare_toggle",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_toggle_lookup_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildToggleLookupQuery !== 'function') {\n  node.error('repo.dashboard.buildToggleLookupQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildToggleLookupQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 510,
+    "y": 1340,
+    "wires": [
+      [
+        "pg_get_toggle_state"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_get_toggle_state",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Get actuator state for toggle",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 780,
+    "y": 1340,
+    "wires": [
+      [
+        "fn_build_toggle_cmd"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_build_toggle_cmd",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.build_toggle_command",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.buildToggleCommand !== 'function') {\n  node.error('domain.dashboard.buildToggleCommand is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.buildToggleCommand(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1070,
+    "y": 1340,
+    "wires": [
+      [
+        "6934769a35a4061a",
+        "fn_q_actuator_status"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "inj_refresh_events",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Refresh event sensors",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "4",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 190,
+    "y": 420,
+    "wires": [
+      [
+        "fn_q_event_changes"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_q_event_changes",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_event_sensor_changes_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildEventSensorChangesQuery !== 'function') {\n  node.error('repo.dashboard.buildEventSensorChangesQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildEventSensorChangesQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 420,
+    "wires": [
+      [
+        "pg_event_changes_query"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_event_changes_query",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query event changes",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 720,
+    "y": 420,
+    "wires": [
+      [
+        "fn_fmt_event_changes"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_fmt_event_changes",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.format_event_changes",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.formatEventChanges !== 'function') {\n  node.error('domain.dashboard.formatEventChanges is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.formatEventChanges(msg, { env });\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 980,
+    "y": 420,
+    "wires": [
+      [
+        "tpl_event_changes"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_set_periodic_range",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.set_periodic_range",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.setPeriodicRange !== 'function') {\n  node.error('domain.dashboard.setPeriodicRange is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.setPeriodicRange(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 370,
+    "y": 760,
+    "wires": [
+      [
+        "fn_trigger_periodic"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_set_periodic_bucket",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.set_periodic_bucket",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.setPeriodicBucket !== 'function') {\n  node.error('domain.dashboard.setPeriodicBucket is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.setPeriodicBucket(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 370,
+    "y": 800,
+    "wires": [
+      [
+        "fn_trigger_periodic"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "inj_periodic_auto",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Auto refresh periodic",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "5",
+    "topic": "",
+    "payload": "refresh",
+    "payloadType": "str",
+    "x": 360,
+    "y": 860,
+    "wires": [
+      [
+        "fn_trigger_periodic"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_trigger_periodic",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.trigger_periodic_queries",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.triggerPeriodicQueries !== 'function') {\n  node.error('domain.dashboard.triggerPeriodicQueries is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.triggerPeriodicQueries(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 610,
+    "y": 800,
+    "wires": [
+      [
+        "fn_q_periodic_th"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_q_periodic_th",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_periodic_metrics_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildPeriodicMetricsQuery !== 'function') {\n  node.error('repo.dashboard.buildPeriodicMetricsQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildPeriodicMetricsQuery(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 910,
+    "y": 740,
+    "wires": [
+      [
+        "pg_q_periodic_th"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_q_periodic_th",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query periodic metrics",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 1290,
+    "y": 740,
+    "wires": [
+      [
+        "fn_chart_periodic_th"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_chart_periodic_th",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.format_periodic_charts_by_device",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.formatPeriodicChartsByDevice !== 'function') {\n  node.error('domain.dashboard.formatPeriodicChartsByDevice is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.formatPeriodicChartsByDevice(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1710,
+    "y": 740,
+    "wires": [
+      [
+        "chart_periodic_th"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "inj_refresh_battery",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Refresh battery/status",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "6",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 190,
+    "y": 1820,
+    "wires": [
+      [
+        "fn_q_battery"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_q_battery",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_battery_status_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildBatteryStatusQuery !== 'function') {\n  node.error('repo.dashboard.buildBatteryStatusQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildBatteryStatusQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 1820,
+    "wires": [
+      [
+        "pg_q_battery"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_q_battery",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query battery/status",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 670,
+    "y": 1820,
+    "wires": [
+      [
+        "fn_fmt_battery"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_fmt_battery",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.format_battery_status",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.formatBatteryStatus !== 'function') {\n  node.error('domain.dashboard.formatBatteryStatus is not available in functionGlobalContext');\n  return null;\n}\nconst batteryHelpers = global.get('batteryHelpers') || {};\nreturn domain.dashboard.formatBatteryStatus(msg, { env, batteryHelpers });\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 930,
+    "y": 1820,
+    "wires": [
+      [
+        "tpl_battery"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "4b5c96f665a14d32",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Init activity source",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.2,
+    "topic": "",
+    "payload": "both",
+    "payloadType": "str",
+    "x": 150,
+    "y": 540,
+    "wires": [
+      [
+        "2f98b1d0b7c24c2f"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "2adefdd96498429c",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Init activity range",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.3,
+    "topic": "",
+    "payload": "1h",
+    "payloadType": "str",
+    "x": 150,
+    "y": 620,
+    "wires": [
+      [
+        "f4f7c4a2c8d3d6c1"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "58a7365fbe764f90",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Init periodic range",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.2,
+    "topic": "",
+    "payload": "1h",
+    "payloadType": "str",
+    "x": 140,
+    "y": 720,
+    "wires": [
+      [
+        "dd_periodic_range"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "d61e8a06f0db4593",
+    "type": "inject",
+    "z": "8350c63ee921963f",
+    "name": "Init periodic bucket",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.3,
+    "topic": "",
+    "payload": "auto",
+    "payloadType": "str",
+    "x": 140,
+    "y": 840,
+    "wires": [
+      [
+        "dd_periodic_bucket"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "domain_extract_all_fields",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.mapping.extract_all_fields",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.mapping || typeof domain.mapping.extractAllFields !== 'function') {\n  node.error('domain.mapping.extractAllFields is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.mapping.extractAllFields(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1950,
+    "y": 420,
+    "wires": [
+      [
+        "repo_build_candidate_upsert"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "repo_build_candidate_upsert",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.device_mapping_candidate.build_upsert_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceMappingCandidate || typeof repo.deviceMappingCandidate.buildUpsertQuery !== 'function') {\n  node.error('repo.deviceMappingCandidate.buildUpsertQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceMappingCandidate.buildUpsertQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2300,
+    "y": 420,
+    "wires": [
+      [
+        "repo_exec_candidate_upsert"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "repo_exec_candidate_upsert",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.device_mapping_candidate.execute_upsert",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 2670,
+    "y": 420,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "repo_metrics_build_mapping_lookup",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.metrics.build_mapping_lookup_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.metrics || typeof repo.metrics.buildMappingLookupQuery !== 'function') {\n  node.error('repo.metrics.buildMappingLookupQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.metrics.buildMappingLookupQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2320,
+    "y": 220,
+    "wires": [
+      [
+        "repo_metrics_execute_mapping_lookup"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "repo_metrics_execute_mapping_lookup",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.metrics.execute_mapping_lookup",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "100",
+    "outputs": 1,
+    "x": 2680,
+    "y": 220,
+    "wires": [
+      [
+        "domain_metrics_apply_mappings"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "domain_metrics_apply_mappings",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.metrics.apply_mappings",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.metrics || typeof domain.metrics.applyMappings !== 'function') {\n  node.error('domain.metrics.applyMappings is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.metrics.applyMappings(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 3020,
+    "y": 220,
+    "wires": [
+      [
+        "repo_metrics_build_insert_query"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "repo_metrics_build_insert_query",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.metrics.build_insert_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.metrics || typeof repo.metrics.buildInsertQuery !== 'function') {\n  node.error('repo.metrics.buildInsertQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.metrics.buildInsertQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 3340,
+    "y": 220,
+    "wires": [
+      [
+        "repo_metrics_execute_insert"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "repo_metrics_execute_insert",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.metrics.execute_insert",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "100",
+    "outputs": 1,
+    "x": 3640,
+    "y": 220,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "tpl_device_mapping",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_device_mapping",
+    "name": "Device mapping fields",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div>\n    <h3>Device Mapping</h3>\n\n    <div style=\"display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;\">\n      <label style=\"display:flex;align-items:center;gap:6px;\">\n        Device reference:\n        <select v-model=\"selectedReferenceId\" @change=\"onReferenceChange\" style=\"min-width:320px;\">\n          <option value=\"\">Select reference</option>\n          <option v-for=\"ref in references\" :key=\"String(ref.id)\" :value=\"String(ref.id)\">\n            {{ referenceLabel(ref) }}\n          </option>\n        </select>\n      </label>\n      <button @click=\"refreshReferences\" :disabled=\"loadingReferences || loadingFields\" :style=\"buttonStyle(!loadingReferences && !loadingFields)\">Refresh</button>\n      <span v-if=\"loadingReferences || loadingFields\" style=\"color:#666;\">Loading...</span>\n    </div>\n\n    <div v-if=\"selectedReferenceMeta\" style=\"margin-bottom:8px;color:#555;\">\n      Selected: <strong>{{ selectedReferenceMeta.referenceKey }}</strong>\n      <span v-if=\"selectedReferenceMeta.network\">({{ selectedReferenceMeta.network }})</span>\n      <span v-if=\"selectedReferenceMeta.activeMappingVersion\">- mapping version {{ selectedReferenceMeta.activeMappingVersion }}</span>\n    </div>\n\n    <div v-if=\"error\" style=\"margin-bottom:10px;color:#c62828;font-weight:600;\">{{ error }}</div>\n    <div v-if=\"notice\" style=\"margin-bottom:10px;color:#2e7d32;font-weight:600;\">{{ notice }}</div>\n\n    <div v-if=\"!selectedReferenceId\" style=\"color:#666;\">Select a device reference to configure field mappings.</div>\n\n    <div v-if=\"selectedReferenceId\">\n      <div style=\"margin-bottom:8px;color:#666;font-size:12px;\">\n        Parent object fields cannot be mapped directly. Use the arrow to expand or collapse child sub-fields. Array paths are supported for manual mapping only.\n      </div>\n      <table style=\"width:100%;border-collapse:collapse;\">\n        <tr>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Source field</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Inferred type</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Sample</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Role</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Normalized field</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Data type</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Unit</th>\n          <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Active</th>\n        </tr>\n        <tr v-for=\"field in visibleFields\" :key=\"field.sourcePath\" :style=\"rowStyle(field)\">\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n            <div :style=\"sourcePathStyle(field)\">\n              <button\n                v-if=\"field.isObjectField && field.hasChildNodes\"\n                @click=\"toggleParentAccordion(field.sourcePath)\"\n                :title=\"isParentExpanded(field.sourcePath) ? 'Collapse children' : 'Expand children'\"\n                style=\"display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;margin-right:6px;border:1px solid #90a4ae;background:#ffffff;color:#455a64;border-radius:4px;cursor:pointer;padding:0;\"\n              >{{ isParentExpanded(field.sourcePath) ? '\u25be' : '\u25b8' }}</button>\n              <span style=\"color:#78909c;margin-right:4px;\" v-else-if=\"field.isObjectSubField\">\u2514\u2500</span>\n              <code>{{ sourcePathLabel(field) }}</code>\n              <span style=\"color:#607d8b;font-size:12px;margin-left:6px;\" v-if=\"field.isObjectField && field.hasChildNodes\">{{ field.directChildCount }} children</span>\n            </div>\n            <div style=\"color:#546e7a;font-size:12px;\" v-if=\"field.isObjectField\">object parent: mapping disabled</div>\n            <div style=\"color:#666;font-size:12px;\" v-if=\"field.isObjectSubField\">sub-field of object: {{ field.parentSourcePath }}</div>\n            <div style=\"color:#8a6d3b;font-size:12px;\" v-if=\"field.isArrayPath\">array path: manual mapping only</div>\n            <div style=\"color:#777;font-size:12px;\" v-if=\"field.lastSeenAt\">last seen: {{ fmtLocal(field.lastSeenAt) }}</div>\n            <div style=\"color:#777;font-size:12px;\" v-if=\"field.seenCount !== null\">seen: {{ field.seenCount }}</div>\n          </td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ field.inferredDataType || 'n/a' }}</td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;max-width:280px;word-break:break-word;\">{{ samplePreview(field.sampleValue) }}</td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:160px;\">\n            <select v-model=\"field.role\" :disabled=\"field.isObjectField\" style=\"width:100%;\">\n              <option v-for=\"role in roleOptions\" :key=\"role.value\" :value=\"role.value\">{{ role.label }}</option>\n            </select>\n          </td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:170px;\">\n            <input v-model=\"field.normalizedField\" type=\"text\" :disabled=\"isFieldLocked(field)\" style=\"width:100%;\" />\n          </td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:150px;\">\n            <select v-model=\"field.dataType\" :disabled=\"isFieldLocked(field)\" style=\"width:100%;\">\n              <option v-for=\"dt in dataTypeOptions\" :key=\"dt\" :value=\"dt\">{{ dt }}</option>\n            </select>\n          </td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:120px;\">\n            <input v-model=\"field.unit\" type=\"text\" :disabled=\"isFieldLocked(field)\" style=\"width:100%;\" />\n          </td>\n          <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n            <input type=\"checkbox\" v-model=\"field.isActive\" :disabled=\"isFieldLocked(field)\" />\n          </td>\n        </tr>\n      </table>\n\n      <div style=\"margin-top:12px;display:flex;gap:10px;align-items:center;\">\n        <button @click=\"saveMappings\" :disabled=\"!canSaveMappings()\" :style=\"buttonStyle(canSaveMappings())\">Save mappings</button>\n        <span style=\"color:#666;\">Only fields with role different from <code>ignore</code> are saved.</span>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      loadingReferences: false,\n      loadingFields: false,\n      saving: false,\n      error: '',\n      notice: '',\n      references: [],\n      selectedReferenceId: '',\n      selectedReferenceMeta: null,\n      fields: [],\n      parentAccordionState: {},\n      roleOptions: [\n        { value: 'ignore', label: 'ignore' },\n        { value: 'metric', label: 'metric' },\n        { value: 'status', label: 'status' },\n        { value: 'battery', label: 'battery' },\n        { value: 'event', label: 'event' },\n        { value: 'actuation', label: 'actuation' },\n        { value: 'metadata', label: 'metadata' }\n      ],\n      dataTypeOptions: ['number', 'integer', 'boolean', 'text', 'json', 'timestamp']\n    };\n  },\n  mounted() {\n    this.refreshReferences();\n  },\n  computed: {\n    visibleFields() {\n      return this.fields.filter((field) => this.isFieldVisible(field));\n    }\n  },\n  methods: {\n    buttonStyle(enabled) {\n      if (enabled) {\n        return {\n          background: '#1565c0',\n          color: '#fff',\n          border: '1px solid #0d47a1',\n          borderRadius: '4px',\n          padding: '4px 10px',\n          cursor: 'pointer'\n        };\n      }\n      return {\n        background: '#e0e0e0',\n        color: '#757575',\n        border: '1px solid #c7c7c7',\n        borderRadius: '4px',\n        padding: '4px 10px',\n        cursor: 'not-allowed',\n        opacity: '0.95'\n      };\n    },\n    fmtLocal(ts) {\n      if (!ts) return 'n/a';\n      return new Date(ts).toLocaleString('fr-FR');\n    },\n    referenceLabel(ref) {\n      const display = ref && ref.referenceDisplayName ? String(ref.referenceDisplayName) : '';\n      const key = ref && ref.referenceKey ? String(ref.referenceKey) : '';\n      if (display && key && display !== key) {\n        return display + ' (' + key + ')';\n      }\n      return display || key || ('reference #' + String(ref && ref.id ? ref.id : 'n/a'));\n    },\n    defaultNormalizedField(sourcePath) {\n      const text = String(sourcePath || '').toLowerCase();\n      const slug = text.replace(/[^\\p{L}\\p{N}]+/gu, '_').replace(/^_+|_+$/g, '');\n      return slug || 'field';\n    },\n    normalizeDataType(raw, inferred) {\n      const value = String(raw || '').trim().toLowerCase();\n      if (this.dataTypeOptions.includes(value)) {\n        return value;\n      }\n      const infer = String(inferred || '').trim().toLowerCase();\n      if (infer === 'number' || infer === 'integer' || infer === 'boolean' || infer === 'timestamp') {\n        return infer;\n      }\n      if (infer === 'object' || infer === 'array' || infer === 'json' || infer === 'null') {\n        return 'json';\n      }\n      return 'text';\n    },\n    samplePreview(value) {\n      if (value === null || value === undefined) {\n        return 'n/a';\n      }\n      if (typeof value === 'string') {\n        return value.length > 120 ? (value.slice(0, 120) + '...') : value;\n      }\n      try {\n        const text = JSON.stringify(value);\n        return text.length > 120 ? (text.slice(0, 120) + '...') : text;\n      } catch (err) {\n        return String(value);\n      }\n    },\n    sourcePathParent(sourcePath) {\n      const path = String(sourcePath || '').trim();\n      if (!path) {\n        return null;\n      }\n\n      if (path.endsWith(']')) {\n        const idx = path.lastIndexOf('[');\n        if (idx > 0) {\n          return path.slice(0, idx);\n        }\n      }\n\n      const dot = path.lastIndexOf('.');\n      if (dot > 0) {\n        return path.slice(0, dot);\n      }\n\n      return null;\n    },\n    sourcePathDepth(sourcePath) {\n      const path = String(sourcePath || '').trim();\n      if (!path) {\n        return 0;\n      }\n      const dotDepth = (path.match(/\\./g) || []).length;\n      const bracketDepth = (path.match(/\\[\\d+\\]/g) || []).length;\n      return dotDepth + bracketDepth;\n    },\n    isArraySourcePath(sourcePath) {\n      return /\\[\\d+\\]/.test(String(sourcePath || ''));\n    },\n    sourcePathLabel(field) {\n      if (field && field.isObjectSubField) {\n        const parent = field.parentSourcePath || '';\n        const prefix = parent ? (parent + '.') : '';\n        if (String(field.sourcePath || '').startsWith(prefix)) {\n          return String(field.sourcePath || '').slice(prefix.length);\n        }\n      }\n      return field && field.sourcePath ? field.sourcePath : '';\n    },\n    sourcePathStyle(field) {\n      const depth = field && Number.isFinite(field.pathDepth) ? field.pathDepth : 0;\n      const style = {\n        paddingLeft: (depth * 10) + 'px',\n        fontFamily: field && field.isObjectSubField ? 'monospace' : 'inherit'\n      };\n      if (field && field.isObjectSubField) {\n        style.borderLeft = '2px solid #cfd8dc';\n        style.marginLeft = '4px';\n      }\n      return style;\n    },\n    ancestorPaths(sourcePath) {\n      const out = [];\n      let current = this.sourcePathParent(sourcePath);\n      while (current) {\n        out.push(current);\n        current = this.sourcePathParent(current);\n      }\n      return out;\n    },\n    isParentExpanded(sourcePath) {\n      return this.parentAccordionState[sourcePath] !== false;\n    },\n    toggleParentAccordion(sourcePath) {\n      const current = this.isParentExpanded(sourcePath);\n      this.parentAccordionState = {\n        ...this.parentAccordionState,\n        [sourcePath]: !current\n      };\n    },\n    isFieldVisible(field) {\n      if (!field || !field.sourcePath) {\n        return false;\n      }\n      const ancestors = this.ancestorPaths(field.sourcePath);\n      for (const ancestor of ancestors) {\n        if (Object.prototype.hasOwnProperty.call(this.parentAccordionState, ancestor) && !this.isParentExpanded(ancestor)) {\n          return false;\n        }\n      }\n      return true;\n    },\n    resetParentAccordionState() {\n      const next = {};\n      for (const field of this.fields) {\n        if (!field || !field.isObjectField || !field.hasChildNodes) {\n          continue;\n        }\n        const current = this.parentAccordionState[field.sourcePath];\n        next[field.sourcePath] = (current === undefined) ? false : Boolean(current);\n      }\n      this.parentAccordionState = next;\n    },\n    rowStyle(field) {\n      if (field && field.isObjectField) {\n        return { background: '#f5f8fb' };\n      }\n      if (field && field.isObjectSubField) {\n        return { background: '#fbfdff' };\n      }\n      return {};\n    },\n    isFieldLocked(field) {\n      return Boolean((field && field.isObjectField) || (field && field.role === 'ignore'));\n    },\n    normalizeFieldRows(rows) {\n      const list = Array.isArray(rows) ? rows : [];\n      const inferredTypeByPath = {};\n      for (const row of list) {\n        const sourcePath = String(row && row.sourcePath ? row.sourcePath : '');\n        if (!sourcePath) {\n          continue;\n        }\n        const inferredType = String(row && row.inferredDataType ? row.inferredDataType : '').trim().toLowerCase();\n        if (inferredType) {\n          inferredTypeByPath[sourcePath] = inferredType;\n        }\n      }\n\n      const out = list.map((row) => {\n        const sourcePath = String(row.sourcePath || '');\n        const inferredDataType = row.inferredDataType || null;\n        const isObjectField = String(inferredDataType || '').trim().toLowerCase() === 'object';\n        const role = isObjectField ? 'ignore' : (row.role && row.role !== 'ignore' ? String(row.role) : 'ignore');\n        const parentSourcePath = this.sourcePathParent(sourcePath);\n        const parentInferredType = parentSourcePath ? (inferredTypeByPath[parentSourcePath] || null) : null;\n        return {\n          sourcePath,\n          parentSourcePath,\n          parentInferredType,\n          isObjectField,\n          pathDepth: this.sourcePathDepth(sourcePath),\n          isObjectSubField: Boolean(parentSourcePath && parentInferredType === 'object'),\n          isArrayPath: this.isArraySourcePath(sourcePath),\n          inferredDataType,\n          sampleValue: row.sampleValue,\n          seenCount: row.seenCount === null || row.seenCount === undefined ? null : Number(row.seenCount),\n          lastSeenAt: row.lastSeenAt || null,\n          mapped: Boolean(row.mapped),\n          mappingId: row.mappingId || null,\n          role,\n          normalizedField: row.normalizedField || this.defaultNormalizedField(sourcePath),\n          dataType: this.normalizeDataType(row.dataType, row.inferredDataType),\n          unit: row.unit || '',\n          isActive: row.isActive !== false\n        };\n      });\n\n      const directChildCountByPath = {};\n      for (const field of out) {\n        if (field.parentSourcePath) {\n          directChildCountByPath[field.parentSourcePath] = (directChildCountByPath[field.parentSourcePath] || 0) + 1;\n        }\n      }\n      for (const field of out) {\n        field.directChildCount = directChildCountByPath[field.sourcePath] || 0;\n        field.hasChildNodes = field.directChildCount > 0;\n      }\n\n      out.sort((a, b) => String(a.sourcePath || '').localeCompare(String(b.sourcePath || '')));\n      return out;\n    },\n    canSaveMappings() {\n      return Boolean(this.selectedReferenceId) && !this.saving && !this.loadingFields;\n    },\n    async requestJson(url, options = {}) {\n      const cfg = {\n        method: options.method || 'GET',\n        headers: { 'Content-Type': 'application/json' }\n      };\n      if (options.body !== undefined) {\n        cfg.body = JSON.stringify(options.body);\n      }\n\n      const response = await fetch(url, cfg);\n      let payload = null;\n      try {\n        payload = await response.json();\n      } catch (err) {\n        payload = null;\n      }\n\n      if (!response.ok) {\n        const message = payload && payload.error && payload.error.message ? payload.error.message : ('HTTP ' + response.status);\n        throw new Error(message);\n      }\n      return payload || { ok: true, data: null };\n    },\n    async refreshReferences() {\n      this.loadingReferences = true;\n      this.error = '';\n      try {\n        const res = await this.requestJson('/api/v1/device-references');\n        this.references = Array.isArray(res.data) ? res.data : [];\n        if (this.selectedReferenceId) {\n          const selected = this.references.find((ref) => String(ref.id) === String(this.selectedReferenceId));\n          if (!selected) {\n            this.selectedReferenceId = '';\n            this.selectedReferenceMeta = null;\n            this.fields = [];\n            this.parentAccordionState = {};\n          }\n        }\n      } catch (err) {\n        this.error = err.message || 'Failed to load references';\n      } finally {\n        this.loadingReferences = false;\n      }\n    },\n    async onReferenceChange() {\n      await this.loadMappingFields();\n    },\n    async loadMappingFields() {\n      const id = Number(this.selectedReferenceId);\n      if (!Number.isInteger(id) || id <= 0) {\n        this.selectedReferenceMeta = null;\n        this.fields = [];\n        this.parentAccordionState = {};\n        return;\n      }\n\n      this.loadingFields = true;\n      this.error = '';\n      this.notice = '';\n      try {\n        const res = await this.requestJson('/api/v1/device-references/' + id + '/mapping-fields');\n        const data = res && res.data ? res.data : null;\n        if (!data) {\n          this.selectedReferenceMeta = null;\n          this.fields = [];\n          this.parentAccordionState = {};\n          return;\n        }\n\n        this.selectedReferenceMeta = {\n          referenceId: data.referenceId,\n          network: data.network,\n          referenceKey: data.referenceKey,\n          activeMappingVersion: data.activeMappingVersion\n        };\n        this.fields = this.normalizeFieldRows(data.fields);\n        this.resetParentAccordionState();\n      } catch (err) {\n        this.error = err.message || 'Failed to load mapping fields';\n      } finally {\n        this.loadingFields = false;\n      }\n    },\n    buildMappingsPayload() {\n      const out = [];\n      const seenNormalized = new Set();\n\n      for (const field of this.fields) {\n        if (field.isObjectField) {\n          continue;\n        }\n        const role = String(field.role || '').trim();\n        if (!role || role === 'ignore') {\n          continue;\n        }\n\n        const normalizedField = this.defaultNormalizedField(field.normalizedField || field.sourcePath);\n        if (!normalizedField) {\n          throw new Error('normalized_field is required for selected mappings.');\n        }\n        if (seenNormalized.has(normalizedField)) {\n          throw new Error('normalized_field must be unique: ' + normalizedField);\n        }\n        seenNormalized.add(normalizedField);\n\n        out.push({\n          source_path: field.sourcePath,\n          normalized_field: normalizedField,\n          role,\n          data_type: this.normalizeDataType(field.dataType, field.inferredDataType),\n          unit: String(field.unit || '').trim() || null,\n          is_active: field.isActive !== false\n        });\n      }\n\n      return out;\n    },\n    async saveMappings() {\n      const id = Number(this.selectedReferenceId);\n      if (!Number.isInteger(id) || id <= 0) {\n        this.error = 'Please select a reference first.';\n        return;\n      }\n\n      this.saving = true;\n      this.error = '';\n      this.notice = '';\n      try {\n        const mappings = this.buildMappingsPayload();\n        await this.requestJson('/api/v1/device-references/' + id + '/mappings', {\n          method: 'PUT',\n          body: { mappings }\n        });\n        this.notice = 'Mappings updated for reference ' + id + '.';\n        await this.loadMappingFields();\n      } catch (err) {\n        this.error = err.message || 'Failed to save mappings';\n      } finally {\n        this.saving = false;\n      }\n    }\n  }\n};\n</script>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1300,
+    "y": 2060,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_suggestions",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API GET /api/v1/device-references/suggestions",
+    "url": "/api/v1/device-references/suggestions",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 270,
+    "y": 2280,
+    "wires": [
+      [
+        "api_domain_parse_ref_suggestions"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_parse_ref_suggestions",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.parse_ref_suggestion_filters",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.parseDeviceReferenceSuggestionFilters !== 'function') {\n  node.error('domain.api.parseDeviceReferenceSuggestionFilters is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.api.parseDeviceReferenceSuggestionFilters(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 650,
+    "y": 2280,
+    "wires": [
+      [
+        "api_repo_build_ref_suggestions"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_suggestions",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_suggestion_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildSuggestionQuery !== 'function') {\n  node.error('repo.deviceReference.buildSuggestionQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildSuggestionQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1020,
+    "y": 2280,
+    "wires": [
+      [
+        "api_repo_exec_ref_suggestions"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_suggestions",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_suggestion_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "200",
+    "outputs": 1,
+    "x": 1410,
+    "y": 2280,
+    "wires": [
+      [
+        "api_domain_format_ref_suggestions"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_format_ref_suggestions",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.mapping.format_reference_suggestions",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.mapping || typeof domain.mapping.formatReferenceSuggestions !== 'function') {\n  node.error('domain.mapping.formatReferenceSuggestions is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.mapping.formatReferenceSuggestions(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1780,
+    "y": 2280,
+    "wires": [
+      [
+        "api_domain_wrap_ref_suggestions"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_wrap_ref_suggestions",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.wrap_ok",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.wrapApiData !== 'function') {\n  node.error('domain.api.wrapApiData is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.api.wrapApiData(msg, 200);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2070,
+    "y": 2280,
+    "wires": [
+      [
+        "api_http_resp_ref_suggestions"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_suggestions",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response suggestions",
+    "statusCode": "",
+    "headers": {},
+    "x": 2350,
+    "y": 2280,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_list",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API GET /api/v1/device-references",
+    "url": "/api/v1/device-references",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 250,
+    "y": 2340,
+    "wires": [
+      [
+        "api_domain_parse_ref_list"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_parse_ref_list",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.parse_ref_list_filters",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.parseDeviceReferenceListFilters !== 'function') {\n  node.error('domain.api.parseDeviceReferenceListFilters is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.api.parseDeviceReferenceListFilters(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 630,
+    "y": 2340,
+    "wires": [
+      [
+        "api_repo_build_ref_list"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_list",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_list_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildListQuery !== 'function') {\n  node.error('repo.deviceReference.buildListQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildListQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1000,
+    "y": 2340,
+    "wires": [
+      [
+        "api_repo_exec_ref_list"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_list",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_list_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "200",
+    "outputs": 1,
+    "x": 1370,
+    "y": 2340,
+    "wires": [
+      [
+        "api_domain_format_ref_list"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_format_ref_list",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.mapping.format_device_references",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.mapping || typeof domain.mapping.formatDeviceReferences !== 'function') {\n  node.error('domain.mapping.formatDeviceReferences is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.mapping.formatDeviceReferences(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1760,
+    "y": 2340,
+    "wires": [
+      [
+        "api_domain_wrap_ref_list"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_wrap_ref_list",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.wrap_ok_list",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.wrapApiData !== 'function') {\n  node.error('domain.api.wrapApiData is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.api.wrapApiData(msg, 200);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2050,
+    "y": 2340,
+    "wires": [
+      [
+        "api_http_resp_ref_list"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_list",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response references list",
+    "statusCode": "",
+    "headers": {},
+    "x": 2340,
+    "y": 2340,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_create",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API POST /api/v1/device-references",
+    "url": "/api/v1/device-references",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 250,
+    "y": 2460,
+    "wires": [
+      [
+        "api_json_ref_create"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_json_ref_create",
+    "type": "json",
+    "z": "8350c63ee921963f",
+    "name": "JSON parse create",
+    "property": "payload",
+    "action": "obj",
+    "pretty": false,
+    "x": 500,
+    "y": 2460,
+    "wires": [
+      [
+        "api_domain_validate_ref_create"
+      ]
+    ]
+  },
+  {
+    "id": "api_domain_validate_ref_create",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.validate_create_request",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.normalizeApiDeviceReferenceCreateRequest !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api create helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.normalizeApiDeviceReferenceCreateRequest(msg);\nif (!msg || !msg.deviceReferenceValidation || !msg.deviceReferenceValidation.ok) {\n  const v = msg && msg.deviceReferenceValidation ? msg.deviceReferenceValidation : {};\n  msg = domain.api.setApiError(msg || {}, v.statusCode || 422, v.code || 'validation_failed', v.message || 'Invalid payload', v.details || []);\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 860,
+    "y": 2460,
+    "wires": [
+      [
+        "api_repo_build_ref_find_for_create"
+      ],
+      [
+        "api_http_resp_ref_create"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_find_for_create",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_find_by_key_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildFindByKeyQuery !== 'function') {\n  node.error('repo.deviceReference.buildFindByKeyQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildFindByKeyQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1260,
+    "y": 2460,
+    "wires": [
+      [
+        "api_repo_exec_ref_find_for_create"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_find_for_create",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_find_by_key_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 1660,
+    "y": 2460,
+    "wires": [
+      [
+        "api_gate_ref_create_conflict"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_gate_ref_create_conflict",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.reject_create_conflict",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api.setApiError is not available in functionGlobalContext');\n  return null;\n}\nconst rows = Array.isArray(msg.payload) ? msg.payload : [];\nif (rows.length > 0) {\n  msg = domain.api.setApiError(msg, 409, 'reference_key_exists', 'A device reference with this network and reference_key already exists.');\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2050,
+    "y": 2460,
+    "wires": [
+      [
+        "api_repo_build_ref_create"
+      ],
+      [
+        "api_http_resp_ref_create"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_create",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_create_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildCreateQuery !== 'function') {\n  node.error('repo.deviceReference.buildCreateQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildCreateQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2410,
+    "y": 2460,
+    "wires": [
+      [
+        "api_repo_exec_ref_create"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_create",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_create_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 2770,
+    "y": 2460,
+    "wires": [
+      [
+        "api_domain_format_ref_created"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_format_ref_created",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.format_single_reference_created",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.formatSingleDeviceReference !== 'function' || typeof domain.api.wrapApiData !== 'function') {\n  node.error('domain.api reference format helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.formatSingleDeviceReference(msg);\nif (!msg.payload) {\n  msg = domain.api.setApiError(msg || {}, 500, 'create_failed', 'Reference creation did not return a row.');\n  return msg;\n}\nif (!Array.isArray(msg.payload.capabilities)) {\n  msg.payload.capabilities = [];\n}\nreturn domain.api.wrapApiData(msg, 201);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 3180,
+    "y": 2460,
+    "wires": [
+      [
+        "api_http_resp_ref_create"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_create",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response create reference",
+    "statusCode": "",
+    "headers": {},
+    "x": 3500,
+    "y": 2460,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_update",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API PUT /api/v1/device-references/:id",
+    "url": "/api/v1/device-references/:id",
+    "method": "put",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 250,
+    "y": 2540,
+    "wires": [
+      [
+        "api_json_ref_update"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_json_ref_update",
+    "type": "json",
+    "z": "8350c63ee921963f",
+    "name": "JSON parse update",
+    "property": "payload",
+    "action": "obj",
+    "pretty": false,
+    "x": 500,
+    "y": 2540,
+    "wires": [
+      [
+        "api_domain_validate_ref_update"
+      ]
+    ]
+  },
+  {
+    "id": "api_domain_validate_ref_update",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.validate_update_request",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.normalizeApiDeviceReferenceUpdateRequest !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api update helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.normalizeApiDeviceReferenceUpdateRequest(msg);\nif (!msg || !msg.deviceReferenceValidation || !msg.deviceReferenceValidation.ok) {\n  const v = msg && msg.deviceReferenceValidation ? msg.deviceReferenceValidation : {};\n  msg = domain.api.setApiError(msg || {}, v.statusCode || 422, v.code || 'validation_failed', v.message || 'Invalid payload', v.details || []);\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 860,
+    "y": 2540,
+    "wires": [
+      [
+        "api_repo_build_ref_get_for_update"
+      ],
+      [
+        "api_http_resp_ref_update"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_get_for_update",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_get_by_id_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildGetByIdQuery !== 'function') {\n  node.error('repo.deviceReference.buildGetByIdQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildGetByIdQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1260,
+    "y": 2540,
+    "wires": [
+      [
+        "api_repo_exec_ref_get_for_update"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_get_for_update",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_get_by_id_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 1660,
+    "y": 2540,
+    "wires": [
+      [
+        "api_gate_ref_update_exists"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_gate_ref_update_exists",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.ensure_update_target_exists",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api.setApiError is not available in functionGlobalContext');\n  return null;\n}\nconst rows = Array.isArray(msg.payload) ? msg.payload : [];\nif (rows.length === 0) {\n  msg = domain.api.setApiError(msg, 404, 'reference_not_found', 'No device reference exists for the provided id.');\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2050,
+    "y": 2540,
+    "wires": [
+      [
+        "api_repo_build_ref_update"
+      ],
+      [
+        "api_http_resp_ref_update"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_update",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_update_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildUpdateQuery !== 'function') {\n  node.error('repo.deviceReference.buildUpdateQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildUpdateQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2410,
+    "y": 2540,
+    "wires": [
+      [
+        "api_repo_exec_ref_update"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_update",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_update_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 2770,
+    "y": 2540,
+    "wires": [
+      [
+        "api_domain_format_ref_updated"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_format_ref_updated",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.format_single_reference_updated",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.formatSingleDeviceReference !== 'function' || typeof domain.api.wrapApiData !== 'function') {\n  node.error('domain.api reference format helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.formatSingleDeviceReference(msg);\nif (!msg.payload) {\n  msg = domain.api.setApiError(msg || {}, 500, 'update_failed', 'Reference update did not return a row.');\n  return msg;\n}\nif (!Array.isArray(msg.payload.capabilities)) {\n  msg.payload.capabilities = [];\n}\nreturn domain.api.wrapApiData(msg, 200);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 3180,
+    "y": 2540,
+    "wires": [
+      [
+        "api_http_resp_ref_update"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_update",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response update reference",
+    "statusCode": "",
+    "headers": {},
+    "x": 3500,
+    "y": 2540,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_link",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API POST /api/v1/device-reference-links",
+    "url": "/api/v1/device-reference-links",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 250,
+    "y": 2640,
+    "wires": [
+      [
+        "api_json_ref_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_json_ref_link",
+    "type": "json",
+    "z": "8350c63ee921963f",
+    "name": "JSON parse link",
+    "property": "payload",
+    "action": "obj",
+    "pretty": false,
+    "x": 500,
+    "y": 2640,
+    "wires": [
+      [
+        "api_domain_validate_ref_link"
+      ]
+    ]
+  },
+  {
+    "id": "api_domain_validate_ref_link",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.validate_link_request",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.normalizeDeviceReferenceLinkInput !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api link helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.normalizeDeviceReferenceLinkInput(msg);\nif (!msg || !msg.deviceReferenceLinkValidation || !msg.deviceReferenceLinkValidation.ok) {\n  const v = msg && msg.deviceReferenceLinkValidation ? msg.deviceReferenceLinkValidation : {};\n  msg = domain.api.setApiError(msg || {}, v.statusCode || 422, v.code || 'validation_failed', v.message || 'Invalid payload', v.details || []);\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 860,
+    "y": 2640,
+    "wires": [
+      [
+        "api_ref_link_prepare_lookup"
+      ],
+      [
+        "api_http_resp_ref_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_ref_link_prepare_lookup",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.prepare_link_reference_lookup",
+    "func": "const input = msg && msg.deviceReferenceLinkInput ? msg.deviceReferenceLinkInput : null;\nif (!input || !Number.isInteger(input.reference_id)) {\n  return null;\n}\nmsg.deviceReferenceInput = { id: input.reference_id };\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1260,
+    "y": 2640,
+    "wires": [
+      [
+        "api_repo_build_ref_get_for_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_get_for_link",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.build_get_by_id_query_link",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReference || typeof repo.deviceReference.buildGetByIdQuery !== 'function') {\n  node.error('repo.deviceReference.buildGetByIdQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReference.buildGetByIdQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1660,
+    "y": 2640,
+    "wires": [
+      [
+        "api_repo_exec_ref_get_for_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_get_for_link",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReference.execute_get_by_id_query_link",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 2060,
+    "y": 2640,
+    "wires": [
+      [
+        "api_gate_ref_link_reference_exists"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_gate_ref_link_reference_exists",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.ensure_link_reference_exists",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api.setApiError is not available in functionGlobalContext');\n  return null;\n}\nconst rows = Array.isArray(msg.payload) ? msg.payload : [];\nif (rows.length === 0) {\n  msg = domain.api.setApiError(msg, 404, 'reference_not_found', 'No device reference exists for reference_id.');\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2470,
+    "y": 2640,
+    "wires": [
+      [
+        "api_repo_build_device_assign_ref"
+      ],
+      [
+        "api_http_resp_ref_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_device_assign_ref",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.devices.build_assign_reference_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.devices || typeof repo.devices.buildAssignReferenceQuery !== 'function') {\n  node.error('repo.devices.buildAssignReferenceQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.devices.buildAssignReferenceQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2870,
+    "y": 2640,
+    "wires": [
+      [
+        "api_repo_exec_device_assign_ref"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_device_assign_ref",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.devices.execute_assign_reference_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 3240,
+    "y": 2640,
+    "wires": [
+      [
+        "api_gate_ref_link_device_exists"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_gate_ref_link_device_exists",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.ensure_link_device_exists",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api.setApiError is not available in functionGlobalContext');\n  return null;\n}\nconst rows = Array.isArray(msg.payload) ? msg.payload : [];\nif (rows.length === 0) {\n  msg = domain.api.setApiError(msg, 404, 'device_not_found', 'No device exists for device_id.');\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 3630,
+    "y": 2640,
+    "wires": [
+      [
+        "api_wrap_ref_link_success"
+      ],
+      [
+        "api_http_resp_ref_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_wrap_ref_link_success",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.wrap_link_success",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.wrapApiData !== 'function') {\n  node.error('domain.api.wrapApiData is not available in functionGlobalContext');\n  return null;\n}\nconst row = Array.isArray(msg.payload) ? msg.payload[0] : null;\nmsg.payload = row ? {\n  deviceId: row.device_id,\n  network: row.network,\n  externalId: row.external_id,\n  displayName: row.display_name || row.external_id,\n  referenceId: row.device_reference_id\n} : null;\nreturn domain.api.wrapApiData(msg, 200);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 3960,
+    "y": 2640,
+    "wires": [
+      [
+        "api_http_resp_ref_link"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_link",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response device-reference link",
+    "statusCode": "",
+    "headers": {},
+    "x": 4250,
+    "y": 2640,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "tpl_device_references",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_device_references",
+    "name": "Device references manager",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div>\n    <h3>Device References</h3>\n\n    <div style=\"display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;\">\n      <label>\n        Network:\n        <select v-model=\"networkFilter\" style=\"margin-left:6px;\">\n          <option value=\"\">All</option>\n          <option value=\"zigbee\">zigbee</option>\n          <option value=\"lorawan\">lorawan</option>\n        </select>\n      </label>\n      <label style=\"display:flex;align-items:center;gap:6px;\">\n        <input type=\"checkbox\" v-model=\"onlyUnlinked\" />\n        Only unlinked devices\n      </label>\n      <button @click=\"refreshAll\" :disabled=\"loading\" :style=\"buttonStyle(!loading)\">Refresh</button>\n      <span v-if=\"loading\" style=\"color:#666;\">Loading...</span>\n    </div>\n\n    <div v-if=\"error\" style=\"margin-bottom:10px;color:#c62828;font-weight:600;\">{{ error }}</div>\n    <div v-if=\"notice\" style=\"margin-bottom:10px;color:#2e7d32;font-weight:600;\">{{ notice }}</div>\n\n    <h4 style=\"margin:8px 0;\">Reference suggestions</h4>\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <tr>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Device</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Network</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Suggested key</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Status</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Reason</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Reference</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Action</th>\n      </tr>\n      <tr v-for=\"row in suggestions\" :key=\"row.deviceId\" style=\"vertical-align:top;\">\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <div><strong>{{ row.displayName || row.externalId }}</strong></div>\n          <div style=\"color:#666;font-size:12px;\">external_id: {{ row.externalId }}</div>\n          <div style=\"color:#666;font-size:12px;\">device_id: {{ row.deviceId }}</div>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ row.network }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ row.suggestedReferenceKey || 'n/a' }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ row.suggestionStatus }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ row.reason }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:220px;\">\n          <select v-model=\"selectedReferenceByDevice[row.deviceId]\" style=\"width:100%;\">\n            <option value=\"\">Select reference</option>\n            <option\n              v-for=\"ref in referencesFor(row.network)\"\n              :key=\"String(row.deviceId) + '-' + String(ref.id)\"\n              :value=\"String(ref.id)\"\n            >\n              {{ ref.referenceDisplayName }} ({{ ref.referenceKey }})\n            </option>\n          </select>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:380px;\">\n          <div style=\"display:flex;gap:6px;flex-wrap:wrap;align-items:center;\">\n            <button\n              @click=\"linkSelected(row.deviceId)\"\n              :disabled=\"!canLinkSelected(row)\"\n              :style=\"buttonStyle(canLinkSelected(row))\"\n            >\n              Link selected\n            </button>\n          </div>\n          <div\n            v-if=\"row.suggestionStatus === 'suggest_create_reference'\"\n            style=\"margin-top:8px;border:1px solid #ddd;border-radius:6px;padding:8px;\"\n          >\n            <div style=\"margin-bottom:6px;\">\n              <input\n                v-model=\"createDisplayNameByDevice[row.deviceId]\"\n                type=\"text\"\n                placeholder=\"reference_display_name\"\n                style=\"width:100%;\"\n              />\n            </div>\n            <div style=\"margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap;\">\n              <label v-for=\"cap in capabilityOptions\" :key=\"String(row.deviceId) + '-new-' + cap\" style=\"display:flex;align-items:center;gap:4px;\">\n                <input type=\"checkbox\" :value=\"cap\" v-model=\"createCapabilitiesByDevice[row.deviceId]\" />\n                {{ cap }}\n              </label>\n            </div>\n            <button @click=\"createAndLink(row)\" :disabled=\"!canCreateAndLink(row)\" :style=\"buttonStyle(canCreateAndLink(row))\">Create + Link</button>\n          </div>\n        </td>\n      </tr>\n    </table>\n\n    <h4 style=\"margin:16px 0 8px;\">Existing references</h4>\n    <table style=\"width:100%;border-collapse:collapse;\">\n      <tr>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">ID</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Network</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Reference key</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Vendor</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Model</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Display name</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Capabilities</th>\n        <th style=\"text-align:left;border-bottom:1px solid #ccc;\">Action</th>\n      </tr>\n      <tr v-for=\"ref in references\" :key=\"ref.id\">\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ ref.id }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ ref.network }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ ref.referenceKey }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ ref.vendor || 'n/a' }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">{{ ref.model || 'n/a' }}</td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:180px;\">\n          <input v-model=\"editDisplayNameByRef[ref.id]\" type=\"text\" style=\"width:100%;\" />\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;min-width:250px;\">\n          <div style=\"display:flex;gap:10px;flex-wrap:wrap;\">\n            <label v-for=\"cap in capabilityOptions\" :key=\"String(ref.id) + '-edit-' + cap\" style=\"display:flex;align-items:center;gap:4px;\">\n              <input type=\"checkbox\" :value=\"cap\" v-model=\"editCapabilitiesByRef[ref.id]\" />\n              {{ cap }}\n            </label>\n          </div>\n        </td>\n        <td style=\"padding:6px 4px;border-bottom:1px solid #eee;\">\n          <button @click=\"saveReference(ref)\" :disabled=\"!canSaveReference(ref)\" :style=\"buttonStyle(canSaveReference(ref))\">Save</button>\n        </td>\n      </tr>\n    </table>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      loading: false,\n      error: '',\n      notice: '',\n      networkFilter: '',\n      onlyUnlinked: false,\n      refreshTimer: null,\n      suggestions: [],\n      references: [],\n      selectedReferenceByDevice: {},\n      createDisplayNameByDevice: {},\n      createCapabilitiesByDevice: {},\n      editDisplayNameByRef: {},\n      editCapabilitiesByRef: {},\n      capabilityOptions: ['actuator', 'periodic_sensor', 'event_driven_sensor']\n    };\n  },\n  mounted() {\n    this.refreshAll();\n  },\n  unmounted() {\n    if (this.refreshTimer) {\n      clearTimeout(this.refreshTimer);\n      this.refreshTimer = null;\n    }\n  },\n  watch: {\n    networkFilter() {\n      this.scheduleRefresh();\n    },\n    onlyUnlinked() {\n      this.scheduleRefresh();\n    }\n  },\n  methods: {\n    normalizeCapabilities(raw) {\n      const arr = Array.isArray(raw) ? raw : [];\n      const allowed = new Set(this.capabilityOptions);\n      const out = [];\n      const seen = new Set();\n      for (const item of arr) {\n        if (!allowed.has(item) || seen.has(item)) continue;\n        seen.add(item);\n        out.push(item);\n      }\n      return out;\n    },\n    buttonStyle(enabled) {\n      if (enabled) {\n        return {\n          background: '#1565c0',\n          color: '#fff',\n          border: '1px solid #0d47a1',\n          borderRadius: '4px',\n          padding: '4px 10px',\n          cursor: 'pointer'\n        };\n      }\n      return {\n        background: '#e0e0e0',\n        color: '#757575',\n        border: '1px solid #c7c7c7',\n        borderRadius: '4px',\n        padding: '4px 10px',\n        cursor: 'not-allowed',\n        opacity: '0.95'\n      };\n    },\n    canLinkSelected(row) {\n      return !this.loading && Boolean(this.selectedReferenceByDevice[row.deviceId]);\n    },\n    canCreateAndLink(row) {\n      return !this.loading;\n    },\n    canSaveReference(ref) {\n      if (this.loading) {\n        return false;\n      }\n      const localValue = this.editDisplayNameByRef[ref.id];\n      const fallbackValue = ref.referenceDisplayName || ref.referenceKey || '';\n      const displayName = String(localValue == null ? fallbackValue : localValue).trim();\n      return Boolean(displayName);\n    },\n    scheduleRefresh() {\n      if (this.refreshTimer) {\n        clearTimeout(this.refreshTimer);\n      }\n      this.refreshTimer = setTimeout(() => {\n        this.refreshTimer = null;\n        this.refreshAll();\n      }, 120);\n    },\n    async requestJson(url, options = {}) {\n      const cfg = {\n        method: options.method || 'GET',\n        headers: { 'Content-Type': 'application/json' }\n      };\n      if (options.body !== undefined) {\n        cfg.body = JSON.stringify(options.body);\n      }\n\n      const response = await fetch(url, cfg);\n      let payload = null;\n      try {\n        payload = await response.json();\n      } catch (err) {\n        payload = null;\n      }\n\n      if (!response.ok) {\n        const message = payload && payload.error && payload.error.message ? payload.error.message : ('HTTP ' + response.status);\n        throw new Error(message);\n      }\n      return payload || { ok: true, data: null };\n    },\n    buildSuggestionUrl() {\n      const params = new URLSearchParams();\n      if (this.networkFilter) {\n        params.set('network', this.networkFilter);\n      }\n      params.set('only_unlinked', this.onlyUnlinked ? 'true' : 'false');\n      const qs = params.toString();\n      return qs ? ('/api/v1/device-references/suggestions?' + qs) : '/api/v1/device-references/suggestions';\n    },\n    buildReferenceListUrl() {\n      const params = new URLSearchParams();\n      if (this.networkFilter) {\n        params.set('network', this.networkFilter);\n      }\n      const qs = params.toString();\n      return qs ? ('/api/v1/device-references?' + qs) : '/api/v1/device-references';\n    },\n    referencesFor(network) {\n      return this.references.filter((ref) => ref.network === network);\n    },\n    defaultDisplayName(row) {\n      const evidence = row && row.evidence ? row.evidence : {};\n      if (row.network === 'zigbee') {\n        const vendor = String(evidence.zigbee_vendor || '').trim();\n        const model = String(evidence.zigbee_model || '').trim();\n        if (vendor && model) {\n          return vendor + ' ' + model;\n        }\n      }\n      if (row.network === 'lorawan') {\n        const profile = String(evidence.lorawan_profile_name || '').trim();\n        if (profile) {\n          return profile;\n        }\n      }\n      return row.suggestedReferenceKey || row.displayName || row.externalId || 'new-reference';\n    },\n    seedSuggestionDefaults() {\n      for (const row of this.suggestions) {\n        const id = row.deviceId;\n        if (!this.selectedReferenceByDevice[id]) {\n          if (row.matchedReference && row.matchedReference.id) {\n            this.selectedReferenceByDevice[id] = String(row.matchedReference.id);\n          } else if (row.currentReference && row.currentReference.id) {\n            this.selectedReferenceByDevice[id] = String(row.currentReference.id);\n          }\n        }\n        if (!this.createDisplayNameByDevice[id]) {\n          this.createDisplayNameByDevice[id] = this.defaultDisplayName(row);\n        }\n        if (!Array.isArray(this.createCapabilitiesByDevice[id])) {\n          this.createCapabilitiesByDevice[id] = [];\n        }\n      }\n    },\n    seedReferenceEditors() {\n      const nextDisplayNameByRef = {};\n      const nextCapabilitiesByRef = {};\n      for (const ref of this.references) {\n        const fallbackValue = ref.referenceDisplayName || ref.referenceKey || \"\";\n        const localValue = this.editDisplayNameByRef[ref.id];\n        nextDisplayNameByRef[ref.id] = String(localValue == null ? fallbackValue : localValue);\n        nextCapabilitiesByRef[ref.id] = Array.isArray(ref.capabilities) ? ref.capabilities.slice() : [];\n      }\n      this.editDisplayNameByRef = nextDisplayNameByRef;\n      this.editCapabilitiesByRef = nextCapabilitiesByRef;\n    },\n    async refreshAll() {\n      this.loading = true;\n      this.error = '';\n      this.notice = '';\n      try {\n        const results = await Promise.all([\n          this.requestJson(this.buildSuggestionUrl()),\n          this.requestJson(this.buildReferenceListUrl())\n        ]);\n        const suggestionsRes = results[0];\n        const referencesRes = results[1];\n\n        this.suggestions = Array.isArray(suggestionsRes.data) ? suggestionsRes.data : [];\n        this.references = Array.isArray(referencesRes.data) ? referencesRes.data : [];\n\n        this.seedSuggestionDefaults();\n        this.seedReferenceEditors();\n      } catch (err) {\n        this.error = err.message || 'Failed to load mapping data';\n      } finally {\n        this.loading = false;\n      }\n    },\n    async linkSelected(deviceId) {\n      const referenceIdRaw = this.selectedReferenceByDevice[deviceId];\n      const referenceId = Number(referenceIdRaw);\n      if (!Number.isInteger(referenceId) || referenceId <= 0) {\n        this.error = 'Please select a valid reference before linking.';\n        return;\n      }\n\n      this.loading = true;\n      this.error = '';\n      this.notice = '';\n      try {\n        await this.requestJson('/api/v1/device-reference-links', {\n          method: 'POST',\n          body: {\n            device_id: deviceId,\n            reference_id: referenceId\n          }\n        });\n        this.notice = 'Device ' + deviceId + ' linked to reference ' + referenceId + '.';\n        await this.refreshAll();\n      } catch (err) {\n        this.error = err.message || 'Failed to link device';\n      } finally {\n        this.loading = false;\n      }\n    },\n    async createAndLink(row) {\n      this.loading = true;\n      this.error = '';\n      this.notice = '';\n\n      try {\n        const evidence = row && row.evidence ? row.evidence : {};\n        const rawDisplayName = this.createDisplayNameByDevice[row.deviceId];\n        const displayName = String(rawDisplayName || '').trim() || this.defaultDisplayName(row);\n        const capabilities = this.normalizeCapabilities(this.createCapabilitiesByDevice[row.deviceId]);\n\n        const createBody = {\n          network: row.network,\n          reference_display_name: displayName,\n          reference_key: row.suggestedReferenceKey || undefined,\n          capabilities\n        };\n\n        if (row.network === 'zigbee') {\n          createBody.vendor = evidence.zigbee_vendor || undefined;\n          createBody.model = evidence.zigbee_model || undefined;\n        } else if (row.network === 'lorawan') {\n          createBody.model = evidence.lorawan_profile_name || row.suggestedReferenceKey || undefined;\n        }\n\n        const createdRes = await this.requestJson('/api/v1/device-references', {\n          method: 'POST',\n          body: createBody\n        });\n\n        const created = createdRes && createdRes.data ? createdRes.data : null;\n        if (!created || !created.id) {\n          throw new Error('Reference was created but no ID was returned.');\n        }\n\n        this.selectedReferenceByDevice[row.deviceId] = String(created.id);\n\n        await this.requestJson('/api/v1/device-reference-links', {\n          method: 'POST',\n          body: {\n            device_id: row.deviceId,\n            reference_id: created.id\n          }\n        });\n\n        this.notice = 'Reference ' + created.id + ' created and linked to device ' + row.deviceId + '.';\n        await this.refreshAll();\n      } catch (err) {\n        this.error = err.message || 'Failed to create and link reference';\n      } finally {\n        this.loading = false;\n      }\n    },\n    async saveReference(ref) {\n      const id = ref.id;\n      const localValue = this.editDisplayNameByRef[id];\n      const fallbackValue = ref.referenceDisplayName || ref.referenceKey || '';\n      const displayName = String(localValue == null ? fallbackValue : localValue).trim();\n      const capabilities = this.normalizeCapabilities(this.editCapabilitiesByRef[id]);\n\n      if (!displayName) {\n        this.error = 'reference_display_name is required.';\n        return;\n      }\n\n      this.loading = true;\n      this.error = '';\n      this.notice = '';\n\n      try {\n        await this.requestJson('/api/v1/device-references/' + id, {\n          method: 'PUT',\n          body: {\n            reference_display_name: displayName,\n            capabilities\n          }\n        });\n        this.notice = 'Reference ' + id + ' updated.';\n        await this.refreshAll();\n      } catch (err) {\n        this.error = err.message || 'Failed to update reference';\n      } finally {\n        this.loading = false;\n      }\n    }\n  }\n};\n</script>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1300,
+    "y": 2140,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_mapping_fields",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API GET /api/v1/device-references/:id/mapping-fields",
+    "url": "/api/v1/device-references/:id/mapping-fields",
+    "method": "get",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 290,
+    "y": 2700,
+    "wires": [
+      [
+        "api_domain_validate_ref_mapping_fields"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_validate_ref_mapping_fields",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.validate_mapping_fields_request",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.normalizeApiDeviceReferenceMappingFieldsRequest !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api mapping-fields helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.normalizeApiDeviceReferenceMappingFieldsRequest(msg);\nif (!msg || !msg.deviceReferenceMappingValidation || !msg.deviceReferenceMappingValidation.ok) {\n  const v = msg && msg.deviceReferenceMappingValidation ? msg.deviceReferenceMappingValidation : {};\n  msg = domain.api.setApiError(msg || {}, v.statusCode || 422, v.code || 'validation_failed', v.message || 'Invalid payload', v.details || []);\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 700,
+    "y": 2700,
+    "wires": [
+      [
+        "api_repo_build_ref_mapping_fields"
+      ],
+      [
+        "api_http_resp_ref_mapping_fields"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_mapping_fields",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReferenceMapping.build_fields_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReferenceMapping || typeof repo.deviceReferenceMapping.buildFieldsQuery !== 'function') {\n  node.error('repo.deviceReferenceMapping.buildFieldsQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReferenceMapping.buildFieldsQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1090,
+    "y": 2700,
+    "wires": [
+      [
+        "api_repo_exec_ref_mapping_fields"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_mapping_fields",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReferenceMapping.execute_fields_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 1480,
+    "y": 2700,
+    "wires": [
+      [
+        "api_domain_format_ref_mapping_fields"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_format_ref_mapping_fields",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.format_mapping_fields_response",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.formatDeviceReferenceMappingFields !== 'function' || typeof domain.api.wrapApiData !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api mapping-fields format helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.formatDeviceReferenceMappingFields(msg);\nif (!msg.payload) {\n  msg = domain.api.setApiError(msg || {}, 404, 'reference_not_found', 'No device reference exists for the provided id.');\n  return msg;\n}\nreturn domain.api.wrapApiData(msg, 200);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1880,
+    "y": 2700,
+    "wires": [
+      [
+        "api_http_resp_ref_mapping_fields"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_mapping_fields",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response mapping fields",
+    "statusCode": "",
+    "headers": {},
+    "x": 2230,
+    "y": 2700,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "api_in_ref_mappings_replace",
+    "type": "http in",
+    "z": "8350c63ee921963f",
+    "name": "API PUT /api/v1/device-references/:id/mappings",
+    "url": "/api/v1/device-references/:id/mappings",
+    "method": "put",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 290,
+    "y": 2780,
+    "wires": [
+      [
+        "api_json_ref_mappings_replace"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_json_ref_mappings_replace",
+    "type": "json",
+    "z": "8350c63ee921963f",
+    "name": "JSON parse mappings replace",
+    "property": "payload",
+    "action": "obj",
+    "pretty": false,
+    "x": 520,
+    "y": 2780,
+    "wires": [
+      [
+        "api_domain_validate_ref_mappings_replace"
+      ]
+    ]
+  },
+  {
+    "id": "api_domain_validate_ref_mappings_replace",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.validate_mappings_replace_request",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.normalizeApiDeviceReferenceMappingsReplaceRequest !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api mappings-replace helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.normalizeApiDeviceReferenceMappingsReplaceRequest(msg);\nif (!msg || !msg.deviceReferenceMappingValidation || !msg.deviceReferenceMappingValidation.ok) {\n  const v = msg && msg.deviceReferenceMappingValidation ? msg.deviceReferenceMappingValidation : {};\n  msg = domain.api.setApiError(msg || {}, v.statusCode || 422, v.code || 'validation_failed', v.message || 'Invalid payload', v.details || []);\n  return [null, msg];\n}\nreturn [msg, null];\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 850,
+    "y": 2780,
+    "wires": [
+      [
+        "api_repo_build_ref_mappings_replace"
+      ],
+      [
+        "api_http_resp_ref_mappings_replace"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_build_ref_mappings_replace",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReferenceMapping.build_replace_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.deviceReferenceMapping || typeof repo.deviceReferenceMapping.buildReplaceQuery !== 'function') {\n  node.error('repo.deviceReferenceMapping.buildReplaceQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.deviceReferenceMapping.buildReplaceQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1240,
+    "y": 2780,
+    "wires": [
+      [
+        "api_repo_exec_ref_mappings_replace"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_repo_exec_ref_mappings_replace",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "repo.deviceReferenceMapping.execute_replace_query",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": "1",
+    "outputs": 1,
+    "x": 1630,
+    "y": 2780,
+    "wires": [
+      [
+        "api_domain_format_ref_mappings_replace"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_domain_format_ref_mappings_replace",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.api.format_mappings_replace_response",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.api || typeof domain.api.formatDeviceReferenceMappingsReplace !== 'function' || typeof domain.api.wrapApiData !== 'function' || typeof domain.api.setApiError !== 'function') {\n  node.error('domain.api mappings-replace format helpers are not available in functionGlobalContext');\n  return null;\n}\nmsg = domain.api.formatDeviceReferenceMappingsReplace(msg);\nif (!msg.payload) {\n  msg = domain.api.setApiError(msg || {}, 404, 'reference_not_found', 'No device reference exists for the provided id.');\n  return msg;\n}\nreturn domain.api.wrapApiData(msg, 200);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 2030,
+    "y": 2780,
+    "wires": [
+      [
+        "api_http_resp_ref_mappings_replace"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "api_http_resp_ref_mappings_replace",
+    "type": "http response",
+    "z": "8350c63ee921963f",
+    "name": "API response mappings replace",
+    "statusCode": "",
+    "headers": {},
+    "x": 2370,
+    "y": 2780,
+    "wires": [],
+    "d": true
+  },
+  {
+    "id": "tpl_activity_interactive_style",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "42c0c2f1b07f4b06",
+    "name": "Interactive controls style",
+    "order": 0,
+    "width": 0,
+    "height": 0,
+    "format": "<template>\n  </template>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 960,
+    "y": 560,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "tpl_periodic_interactive_style",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_periodic_filters",
+    "name": "Interactive controls style",
+    "order": 0,
+    "width": 0,
+    "height": 0,
+    "format": "<template>\n  </template>\n\n<style>\n  /* poc_interactive_controls_v1 */\n  select,\n  input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),\n  textarea {\n    min-height: 34px !important;\n    padding: 6px 10px !important;\n    border: 2px solid #4f6f8d !important;\n    border-radius: 6px !important;\n    background: #ffffff !important;\n    color: #12263a !important;\n    font-size: 14px !important;\n    line-height: 1.35 !important;\n    box-shadow: inset 0 1px 1px rgba(15, 35, 60, 0.08) !important;\n    transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease !important;\n  }\n\n  select {\n    appearance: none !important;\n    -webkit-appearance: none !important;\n    cursor: pointer !important;\n    padding-right: 30px !important;\n    background-image:\n      linear-gradient(45deg, transparent 50%, #36506b 50%),\n      linear-gradient(135deg, #36506b 50%, transparent 50%) !important;\n    background-position:\n      calc(100% - 14px) calc(50% - 3px),\n      calc(100% - 8px) calc(50% - 3px) !important;\n    background-size: 6px 6px, 6px 6px !important;\n    background-repeat: no-repeat !important;\n  }\n\n  input[type='checkbox'], input[type='radio'] {\n    accent-color: #1565c0 !important;\n    cursor: pointer !important;\n    transform: scale(1.05);\n  }\n\n  select:hover:not(:disabled),\n  input:hover:not(:disabled),\n  textarea:hover:not(:disabled) {\n    border-color: #1565c0 !important;\n    background-color: #f4f9ff !important;\n  }\n\n  select:focus,\n  input:focus,\n  textarea:focus,\n  select:focus-visible,\n  input:focus-visible,\n  textarea:focus-visible {\n    outline: none !important;\n    border-color: #0d47a1 !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n    background-color: #ffffff !important;\n  }\n\n  select:disabled,\n  input:disabled,\n  textarea:disabled {\n    background: #eceff3 !important;\n    border-color: #cfd8e3 !important;\n    color: #7d8a99 !important;\n    cursor: not-allowed !important;\n    box-shadow: none !important;\n  }\n\n  button {\n    min-height: 34px !important;\n    border-radius: 6px !important;\n    font-weight: 600 !important;\n  }\n\n  button:focus,\n  button:focus-visible {\n    outline: none !important;\n    box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.22) !important;\n  }\n</style>\n",
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 1010,
+    "y": 1180,
+    "wires": [
+      []
+    ],
+    "d": true
+  },
+  {
+    "id": "tpl_actuator_controls_dynamic",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_actuators_controls",
+    "name": "Actuator controls dynamic",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div>\n    <h3>Actuators</h3>\n    <div v-if=\"groups.length === 0\" style=\"color:#666;\">No mapped actuator is available.</div>\n\n    <section\n      v-for=\"group in groups\"\n      :key=\"group.referenceLabel\"\n      style=\"margin-bottom:14px;\"\n    >\n      <h4 style=\"margin:0 0 8px 0;\">{{ group.referenceLabel }}</h4>\n\n      <div\n        v-for=\"item in group.items\"\n        :key=\"'act-' + String(item.id)\"\n        style=\"margin-bottom:10px;padding:10px;border:1px solid #ddd;border-radius:6px;background:#fff;\"\n      >\n        <div style=\"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline;\">\n          <strong>{{ item.label || item.id }}</strong>\n          <span style=\"color:#666;font-size:12px;\">{{ item.network }} | {{ item.id }}</span>\n        </div>\n\n        <template v-if=\"item.unavailable\">\n          <div style=\"margin-top:6px;color:#666;\">No data</div>\n        </template>\n        <template v-else>\n          <div style=\"margin-top:6px;\">\n            <span v-if=\"item.online\" style=\"color:#2e7d32;font-weight:600;\">Status: Online</span>\n            <span v-else style=\"color:#c62828;font-weight:600;\">Status: Offline</span>\n            <span style=\"color:#666;\"> (last seen {{ fmtLocal(item.lastTs) }})</span>\n          </div>\n          <div style=\"margin-top:4px;\">State <strong>{{ item.stateText }}</strong><span v-if=\"item.statePending\" style=\"color:#ef6c00;margin-left:6px;font-size:12px;\">(pending)</span></div>\n          <div style=\"margin-top:4px;\">\n            <span style=\"margin-right:6px;\">Battery:</span>\n            <span :style=\"{ color: 'white', background: item.batteryColor, padding: '2px 8px', borderRadius: '10px' }\">{{ item.batteryText }}</span>\n          </div>\n        </template>\n\n        <div style=\"margin-top:10px;\">\n          <button\n            @click=\"toggle(item)\"\n            :disabled=\"!item.canToggle\"\n            :style=\"buttonStyle(item.canToggle)\"\n          >\n            Toggle\n          </button>\n        </div>\n      </div>\n    </section>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      pendingStateById: {},\n      pendingTimerById: {}\n    };\n  },\n  watch: {\n    msg: {\n      immediate: true,\n      deep: true,\n      handler() {\n        const rows = Array.isArray(this.msg && this.msg.payload) ? this.msg.payload : [];\n        for (const row of rows) {\n          const id = row && row.id ? String(row.id) : '';\n          if (!id) continue;\n          const pending = this.pendingStateById[id];\n          if (!pending) continue;\n          const live = String(row.stateText || '').trim().toUpperCase();\n          if (live && live === pending) {\n            this.clearPending(id);\n          }\n        }\n      }\n    }\n  },\n  beforeUnmount() {\n    for (const id of Object.keys(this.pendingTimerById)) {\n      clearTimeout(this.pendingTimerById[id]);\n    }\n    this.pendingTimerById = {};\n  },\n  computed: {\n    groups() {\n      const rows = Array.isArray(this.msg && this.msg.payload) ? this.msg.payload : [];\n      const byReference = new Map();\n\n      for (const rawItem of rows) {\n        const item = rawItem && typeof rawItem === 'object' ? { ...rawItem } : {};\n        const id = item && item.id ? String(item.id) : '';\n        const pending = id ? this.pendingStateById[id] : null;\n        if (pending) {\n          item.stateText = pending;\n          item.statePending = true;\n        } else {\n          item.statePending = false;\n        }\n\n        const label = String(item && item.referenceLabel ? item.referenceLabel : 'Unlinked reference');\n        if (!byReference.has(label)) {\n          byReference.set(label, {\n            referenceLabel: label,\n            items: []\n          });\n        }\n        byReference.get(label).items.push(item);\n      }\n\n      return Array.from(byReference.values())\n        .map((group) => ({\n          referenceLabel: group.referenceLabel,\n          items: group.items.slice().sort((a, b) => String(a.label || a.id || '').localeCompare(String(b.label || b.id || '')))\n        }))\n        .sort((a, b) => a.referenceLabel.localeCompare(b.referenceLabel));\n    }\n  },\n  methods: {\n    fmtLocal(ts) {\n      if (!ts) return 'n/a';\n      return new Date(ts).toLocaleString('fr-FR');\n    },\n    buttonStyle(enabled) {\n      if (enabled) {\n        return {\n          background: '#1565c0',\n          color: '#fff',\n          border: '1px solid #0d47a1',\n          borderRadius: '4px',\n          padding: '4px 10px',\n          cursor: 'pointer'\n        };\n      }\n      return {\n        background: '#e0e0e0',\n        color: '#757575',\n        border: '1px solid #c7c7c7',\n        borderRadius: '4px',\n        padding: '4px 10px',\n        cursor: 'not-allowed',\n        opacity: '0.95'\n      };\n    },\n    clearPending(id) {\n      const timer = this.pendingTimerById[id];\n      if (timer) {\n        clearTimeout(timer);\n      }\n      const nextPending = { ...this.pendingStateById };\n      delete nextPending[id];\n      this.pendingStateById = nextPending;\n\n      const nextTimers = { ...this.pendingTimerById };\n      delete nextTimers[id];\n      this.pendingTimerById = nextTimers;\n    },\n    setPending(id, nextState) {\n      this.clearPending(id);\n      this.pendingStateById = {\n        ...this.pendingStateById,\n        [id]: nextState\n      };\n      const timeout = setTimeout(() => {\n        this.clearPending(id);\n      }, 15000);\n      this.pendingTimerById = {\n        ...this.pendingTimerById,\n        [id]: timeout\n      };\n    },\n    nextStateFrom(item) {\n      const id = item && item.id ? String(item.id) : '';\n      const current = String(this.pendingStateById[id] || item.stateText || '').trim().toUpperCase();\n      if (current === 'ON') {\n        return 'OFF';\n      }\n      if (current === 'OFF') {\n        return 'ON';\n      }\n      return null;\n    },\n    toggle(item) {\n      if (!item || !item.canToggle || !item.id) {\n        return;\n      }\n      const id = String(item.id);\n      const next = this.nextStateFrom(item);\n      if (next) {\n        this.setPending(id, next);\n      }\n      this.send({ payload: item.id });\n    }\n  }\n};\n</script>\n",
+    "passthru": false,
+    "storeOutMessages": false,
+    "resendOnRefresh": true,
+    "templateScope": "local",
+    "className": "",
+    "x": 230,
+    "y": 1320,
+    "wires": [
+      [
+        "fn_prepare_toggle"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "tpl_scenarios",
+    "type": "ui-template",
+    "z": "8350c63ee921963f",
+    "group": "grp_scenarios",
+    "name": "Scenario placeholder",
+    "order": 1,
+    "width": 12,
+    "height": 0,
+    "format": "<template>\n  <div style=\"padding:8px 4px;line-height:1.5;\">\n    <h3 style=\"margin:0 0 10px 0;\">Scenario</h3>\n\n    <div style=\"display:grid;gap:12px;\">\n      <section\n        v-for=\"scenario in scenarios\"\n        :key=\"scenario.key\"\n        :style=\"scenarioCardStyle(scenario.key)\"\n      >\n        <div style=\"display:flex;justify-content:space-between;gap:12px;align-items:flex-start;\">\n          <div style=\"width:80%;max-width:80%;\">\n            <div style=\"font-weight:700;\">{{ scenario.name }}</div>\n            <div style=\"margin-top:6px;color:#425466;max-width:100%;\">{{ scenario.description }}</div>\n          </div>\n          <div style=\"display:flex;flex-direction:column;gap:8px;align-items:flex-end;justify-content:flex-start;margin-left:auto;min-width:170px;text-align:right;\">\n            <span :style=\"{ fontWeight: '600', color: isScenarioActive(scenario.key) ? '#2e7d32' : '#8a1c1c' }\">{{ isScenarioActive(scenario.key) ? 'Activ\u00e9' : 'D\u00e9sactiv\u00e9' }}</span>\n            <button @click=\"toggleScenario(scenario.key)\" :style=\"scenarioButtonStyle(scenario.key)\">{{ isScenarioActive(scenario.key) ? 'D\u00e9sactiver' : 'Activer' }}</button>\n          </div>\n        </div>\n      </section>\n    </div>\n\n    <div style=\"margin-top:14px;padding:14px 16px;border:1px solid #d9e2ea;border-radius:8px;background:#ffffff;color:#12263a;\">\n      <div style=\"font-weight:600;margin-bottom:8px;\">Debug values</div>\n      <div v-for=\"row in debugRows\" :key=\"row.name\" style=\"padding:6px 0;border-top:1px solid #eef3f7;\" :class=\"{ 'first-row': row.name === 'light' }\">\n        <span style=\"display:inline-block;min-width:110px;\"><strong>{{ row.name }}</strong></span>\n        <span style=\"display:inline-block;min-width:140px;\">value: {{ row.value }}</span>\n        <span style=\"display:inline-block;min-width:250px;\">last modified: {{ row.updatedAt }}</span>\n        <span style=\"display:inline-block;min-width:110px;\">origin: {{ row.origin }}</span>\n      </div>\n    </div>\n  </div>\n</template>\n\n<script>\nexport default {\n  data() {\n    const emptyEntry = () => ({ value: null, updatedAt: null, origin: null });\n    return {\n      serverState: {\n        activeScenario: null,\n        values: {\n          light: emptyEntry(),\n          occupancy: emptyEntry(),\n          state: emptyEntry()\n        }\n      },\n      scenarios: [\n        {\n          key: 'lux_simple',\n          name: 'Gestion de la luminosit\u00e9',\n          description: \"Quand la luminosit\u00e9 capt\u00e9e par le capteur est trop basse, la prise connect\u00e9e s'active est allume la lumi\u00e8re.\"\n        },\n        {\n          key: 'lux_presence',\n          name: 'Gestion plus complete de la luminosit\u00e9',\n          description: \"Quand la luminosit\u00e9 capt\u00e9e par le capteur est trop basse, si le capteur de presence detecte un mouvement, la prise connect\u00e9e s'active est allume la lumi\u00e8re. Si la lumiere est haute, la prise connect\u00e9e se d\u00e9sactive et \u00e9teint la lumi\u00e8re. Si la luminosit\u00e9 est basse mais qu'il n'y a pas de presence, la prise connect\u00e9e se d\u00e9sactive et \u00e9teint la lumi\u00e8re.\"\n        }\n      ]\n    };\n  },\n  mounted() {\n    this.send({ topic: 'scenario/bootstrap' });\n  },\n  watch: {\n    msg: {\n      immediate: true,\n      deep: true,\n      handler(value) {\n        const payload = value && value.payload;\n        if (!payload || typeof payload !== 'object') {\n          return;\n        }\n        if (!payload.values || typeof payload.values !== 'object') {\n          return;\n        }\n        this.serverState = payload;\n      }\n    }\n  },\n  computed: {\n    activeScenario() {\n      return typeof (this.serverState && this.serverState.activeScenario) === 'string'\n        ? this.serverState.activeScenario\n        : null;\n    },\n    scenarioState() {\n      const value = this.serverState && this.serverState.values;\n      const fallbackEntry = {\n        value: null,\n        updatedAt: null,\n        origin: null\n      };\n      if (!value || typeof value !== 'object') {\n        return {\n          light: { ...fallbackEntry },\n          occupancy: { ...fallbackEntry },\n          state: { ...fallbackEntry }\n        };\n      }\n      return {\n        light: value.light && typeof value.light === 'object' ? value.light : { ...fallbackEntry },\n        occupancy: value.occupancy && typeof value.occupancy === 'object' ? value.occupancy : { ...fallbackEntry },\n        state: value.state && typeof value.state === 'object' ? value.state : { ...fallbackEntry }\n      };\n    },\n    debugRows() {\n      return [\n        {\n          name: 'light',\n          value: this.displayValue(this.scenarioState.light.value),\n          updatedAt: this.displayTimestamp(this.scenarioState.light.updatedAt),\n          origin: this.displayOrigin(this.scenarioState.light.origin)\n        },\n        {\n          name: 'occupancy',\n          value: this.displayValue(this.scenarioState.occupancy.value),\n          updatedAt: this.displayTimestamp(this.scenarioState.occupancy.updatedAt),\n          origin: this.displayOrigin(this.scenarioState.occupancy.origin)\n        },\n        {\n          name: 'state',\n          value: this.displayValue(this.scenarioState.state.value),\n          updatedAt: this.displayTimestamp(this.scenarioState.state.updatedAt),\n          origin: this.displayOrigin(this.scenarioState.state.origin)\n        }\n      ];\n    }\n  },\n  methods: {\n    isScenarioActive(key) {\n      return this.activeScenario === key;\n    },\n    scenarioCardStyle(key) {\n      const active = this.isScenarioActive(key);\n      return {\n        padding: '14px 16px',\n        border: active ? '1px solid #9cc7a4' : '1px solid #d9e2ea',\n        borderRadius: '8px',\n        background: active ? '#f3fbf5' : '#ffffff',\n        color: '#12263a'\n      };\n    },\n    scenarioButtonStyle(key) {\n      const active = this.isScenarioActive(key);\n      return {\n        background: active ? '#f5e6e6' : '#e6f4ea',\n        color: active ? '#8a1c1c' : '#1b5e20',\n        border: active ? '1px solid #d7a7a7' : '1px solid #9cc7a4',\n        borderRadius: '4px',\n        padding: '6px 10px',\n        cursor: 'pointer'\n      };\n    },\n    toggleScenario(key) {\n      this.send({ topic: 'scenario/select', payload: key });\n    },\n    displayValue(value) {\n      if (value === undefined || value === null || value === '') {\n        return 'n/a';\n      }\n      return String(value);\n    },\n    displayTimestamp(value) {\n      if (!value) {\n        return 'n/a';\n      }\n      return String(value);\n    },\n    displayOrigin(value) {\n      if (!value) {\n        return 'n/a';\n      }\n      return String(value);\n    }\n  }\n};\n</script>\n",
+    "passthru": false,
+    "storeOutMessages": false,
+    "resendOnRefresh": false,
+    "templateScope": "local",
+    "className": "",
+    "x": 340,
+    "y": 1940,
+    "wires": [
+      [
+        "ac1d79fa2b1f40ad"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "c4a7252d6e8f4b11",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.capture_scenario_values",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.captureScenarioValues !== 'function') {\n  node.error('domain.dashboard.captureScenarioValues is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.captureScenarioValues(msg, flow);\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 140,
+    "y": 1940,
+    "wires": [
+      [
+        "tpl_scenarios"
+      ],
+      [
+        "fn_trigger_scenario_event"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_merge_scenario_values",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "Merge scenario values",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.mergeScenarioBootstrapValues !== 'function') {\n  node.error('domain.dashboard.mergeScenarioBootstrapValues is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.mergeScenarioBootstrapValues(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 150,
+    "y": 2000,
+    "wires": [
+      [
+        "tpl_scenarios"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_trigger_scenario_event",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.trigger_scenario_event",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.triggerScenarioEvent !== 'function') {\n  node.error('domain.dashboard.triggerScenarioEvent is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.triggerScenarioEvent(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 430,
+    "y": 2060,
+    "wires": [
+      [
+        "6934769a35a4061a"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "ac1d79fa2b1f40ad",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "Route scenario actions",
+    "func": "const topic = String(msg && msg.topic ? msg.topic : '').trim();\nif (topic === 'scenario/bootstrap') {\n  return [msg, null];\n}\nif (topic === 'scenario/select') {\n  return [null, msg];\n}\nreturn null;\n",
+    "outputs": 2,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 1880,
+    "wires": [
+      [
+        "fn_q_scenario_bootstrap"
+      ],
+      [
+        "b8dbcb6d285b3382"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "b8dbcb6d285b3382",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "domain.dashboard.set_active_scenario",
+    "func": "const domain = global.get('domain');\nif (!domain || !domain.dashboard || typeof domain.dashboard.setActiveScenario !== 'function') {\n  node.error('domain.dashboard.setActiveScenario is not available in functionGlobalContext');\n  return null;\n}\nreturn domain.dashboard.setActiveScenario(msg, flow);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 680,
+    "y": 1880,
+    "wires": [
+      [
+        "tpl_scenarios",
+        "fn_trigger_scenario_event"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "fn_q_scenario_bootstrap",
+    "type": "function",
+    "z": "8350c63ee921963f",
+    "name": "repo.dashboard.build_scenario_bootstrap_query",
+    "func": "const repo = global.get('repo');\nif (!repo || !repo.dashboard || typeof repo.dashboard.buildScenarioBootstrapQuery !== 'function') {\n  node.error('repo.dashboard.buildScenarioBootstrapQuery is not available in functionGlobalContext');\n  return null;\n}\nreturn repo.dashboard.buildScenarioBootstrapQuery(msg);\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 2000,
+    "wires": [
+      [
+        "pg_q_scenario_bootstrap"
+      ]
+    ],
+    "d": true
+  },
+  {
+    "id": "pg_q_scenario_bootstrap",
+    "type": "postgresql",
+    "z": "8350c63ee921963f",
+    "name": "Query scenario bootstrap",
+    "query": "",
+    "postgreSQLConfig": "pg_cfg_1",
+    "split": false,
+    "rowsPerMsg": 1,
+    "outputs": 1,
+    "x": 580,
+    "y": 2000,
+    "wires": [
+      [
+        "fn_merge_scenario_values"
+      ]
+    ],
+    "d": true
+  }
+]

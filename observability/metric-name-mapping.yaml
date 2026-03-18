@@ -1,0 +1,31 @@
+version: 1
+owner: platform-foundation
+purpose: Canonical mapping between W6 SLO indicators and runtime metric names
+
+mappings:
+  ingest_api_error_ratio:
+    service: device-ingestion-service
+    slo_indicator: http_availability
+    numerator_metric: http_requests_total{service="device-ingestion-service",status=~"5.."}
+    denominator_metric: http_requests_total{service="device-ingestion-service"}
+
+  reference_api_error_ratio:
+    service: reference-api-service
+    slo_indicator: http_availability
+    numerator_metric: http_requests_total{service="reference-api-service",status=~"5.."}
+    denominator_metric: http_requests_total{service="reference-api-service"}
+
+  command_router_queue_depth:
+    service: channel-policy-router
+    slo_indicator: queue_depth
+    metric: channel_policy_router_queue_depth
+
+  command_router_sla_breach_ratio:
+    service: channel-policy-router
+    slo_indicator: reconciliation_sla_breach_ratio
+    metric: channel_policy_router_reconciliation_sla_breach_ratio
+
+  automation_workflow_start_latency_p95:
+    service: automation-scenario-service
+    slo_indicator: workflow_start_latency_p95_seconds
+    metric_histogram_bucket: automation_workflow_start_seconds_bucket

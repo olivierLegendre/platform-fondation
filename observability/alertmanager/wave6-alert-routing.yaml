@@ -1,0 +1,31 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: default-warn
+  group_by: [alertname, service, wave]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 30m
+  routes:
+    - matchers:
+        - severity="page"
+        - wave="6"
+      receiver: wave6-pager
+    - matchers:
+        - severity="warn"
+        - wave="6"
+      receiver: wave6-warn
+
+receivers:
+  - name: default-warn
+    webhook_configs:
+      - url: https://alerts.example.invalid/default
+
+  - name: wave6-pager
+    webhook_configs:
+      - url: https://alerts.example.invalid/wave6-page
+
+  - name: wave6-warn
+    webhook_configs:
+      - url: https://alerts.example.invalid/wave6-warn

@@ -1,0 +1,7 @@
+services:
+  reference-api-service:
+    image: ghcr.io/olivierlegendre/reference-api-service:v0.1.0
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      SERVICE_NAME: reference-api-service

@@ -1,0 +1,497 @@
+{
+  "source_flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "candidate_report": "nodered/reports/poc_dashboard_cutover_candidates.json",
+  "output_flows": "nodered/flows/poc_dashboard_cutover_preview.json",
+  "candidate_count": 92,
+  "disabled_count": 83,
+  "disabled": [
+    {
+      "id": "2adefdd96498429c",
+      "type": "inject",
+      "name": "Init activity range"
+    },
+    {
+      "id": "2f98b1d0b7c24c2f",
+      "type": "ui-dropdown",
+      "name": "Activity source"
+    },
+    {
+      "id": "42c0c2f1b07f4b06",
+      "type": "ui-group",
+      "name": "Activity (Complete)"
+    },
+    {
+      "id": "4b5c96f665a14d32",
+      "type": "inject",
+      "name": "Init activity source"
+    },
+    {
+      "id": "55dfac0a4fe13584",
+      "type": "function",
+      "name": "domain.dashboard.build_activity_chart_points"
+    },
+    {
+      "id": "58a7365fbe764f90",
+      "type": "inject",
+      "name": "Init periodic range"
+    },
+    {
+      "id": "6f18c6788b6d7dd4",
+      "type": "function",
+      "name": "domain.dashboard.build_activity_chart_points"
+    },
+    {
+      "id": "73686f037df2c0ae",
+      "type": "ui-group",
+      "name": "Activity (Live)"
+    },
+    {
+      "id": "7b41f1c1fb4a4e90",
+      "type": "inject",
+      "name": "Refresh activity (record)"
+    },
+    {
+      "id": "9d4e7b4e4a7a7a53",
+      "type": "ui-chart",
+      "name": "Activity histogram (record)"
+    },
+    {
+      "id": "a3a82f7da98f3876",
+      "type": "ui-page",
+      "name": "Activity"
+    },
+    {
+      "id": "ac1d79fa2b1f40ad",
+      "type": "function",
+      "name": "Route scenario actions"
+    },
+    {
+      "id": "b5f6c3d1e2a4f7b8",
+      "type": "function",
+      "name": "domain.dashboard.set_activity_range"
+    },
+    {
+      "id": "b6c0b4e6a80c63d1",
+      "type": "postgresql",
+      "name": "Query activity (record)"
+    },
+    {
+      "id": "b8a7f6e5d4c3b2a1",
+      "type": "function",
+      "name": "repo.dashboard.build_activity_complete_query"
+    },
+    {
+      "id": "b8dbcb6d285b3382",
+      "type": "function",
+      "name": "domain.dashboard.set_active_scenario"
+    },
+    {
+      "id": "baa340c8c171b714",
+      "type": "ui-chart",
+      "name": "Activity histogram"
+    },
+    {
+      "id": "c4a7252d6e8f4b11",
+      "type": "function",
+      "name": "domain.dashboard.capture_scenario_values"
+    },
+    {
+      "id": "ca605794700c8eb2",
+      "type": "ui-theme",
+      "name": "PoC Theme"
+    },
+    {
+      "id": "cfdf5de51b5addff",
+      "type": "function",
+      "name": "domain.dashboard.update_activity_histogram"
+    },
+    {
+      "id": "chart_periodic_th",
+      "type": "ui-template",
+      "name": "Periodic metrics by device"
+    },
+    {
+      "id": "d0f0b16df9a0491b",
+      "type": "ui-group",
+      "name": "Activity (Record)"
+    },
+    {
+      "id": "d2b5039a3ad0b0e9",
+      "type": "postgresql",
+      "name": "Query activity (complete)"
+    },
+    {
+      "id": "d61e8a06f0db4593",
+      "type": "inject",
+      "name": "Init periodic bucket"
+    },
+    {
+      "id": "d7b2c5a1e4f8b3c6",
+      "type": "inject",
+      "name": "Auto refresh activity"
+    },
+    {
+      "id": "dd_periodic_bucket",
+      "type": "ui-dropdown",
+      "name": "Periodic bucket"
+    },
+    {
+      "id": "dd_periodic_range",
+      "type": "ui-dropdown",
+      "name": "Periodic range"
+    },
+    {
+      "id": "f4f7c4a2c8d3d6c1",
+      "type": "ui-dropdown",
+      "name": "Activity range"
+    },
+    {
+      "id": "f5bb859ed1b03d1f",
+      "type": "function",
+      "name": "domain.dashboard.set_activity_source"
+    },
+    {
+      "id": "f9f0a5b0a5f48a9c",
+      "type": "ui-chart",
+      "name": "Activity histogram (complete)"
+    },
+    {
+      "id": "fn_build_toggle_cmd",
+      "type": "function",
+      "name": "domain.dashboard.build_toggle_command"
+    },
+    {
+      "id": "fn_chart_periodic_th",
+      "type": "function",
+      "name": "domain.dashboard.format_periodic_charts_by_device"
+    },
+    {
+      "id": "fn_fmt_actuator_status",
+      "type": "function",
+      "name": "domain.dashboard.format_actuator_status"
+    },
+    {
+      "id": "fn_fmt_all_devices",
+      "type": "function",
+      "name": "domain.dashboard.format_all_devices"
+    },
+    {
+      "id": "fn_fmt_battery",
+      "type": "function",
+      "name": "domain.dashboard.format_battery_status"
+    },
+    {
+      "id": "fn_fmt_event_changes",
+      "type": "function",
+      "name": "domain.dashboard.format_event_changes"
+    },
+    {
+      "id": "fn_merge_scenario_values",
+      "type": "function",
+      "name": "Merge scenario values"
+    },
+    {
+      "id": "fn_prepare_toggle",
+      "type": "function",
+      "name": "repo.dashboard.build_toggle_lookup_query"
+    },
+    {
+      "id": "fn_q_actuator_status",
+      "type": "function",
+      "name": "repo.dashboard.build_actuator_status_query"
+    },
+    {
+      "id": "fn_q_all_devices",
+      "type": "function",
+      "name": "repo.dashboard.build_all_devices_query"
+    },
+    {
+      "id": "fn_q_battery",
+      "type": "function",
+      "name": "repo.dashboard.build_battery_status_query"
+    },
+    {
+      "id": "fn_q_event_changes",
+      "type": "function",
+      "name": "repo.dashboard.build_event_sensor_changes_query"
+    },
+    {
+      "id": "fn_q_periodic_th",
+      "type": "function",
+      "name": "repo.dashboard.build_periodic_metrics_query"
+    },
+    {
+      "id": "fn_q_scenario_bootstrap",
+      "type": "function",
+      "name": "repo.dashboard.build_scenario_bootstrap_query"
+    },
+    {
+      "id": "fn_set_periodic_bucket",
+      "type": "function",
+      "name": "domain.dashboard.set_periodic_bucket"
+    },
+    {
+      "id": "fn_set_periodic_range",
+      "type": "function",
+      "name": "domain.dashboard.set_periodic_range"
+    },
+    {
+      "id": "fn_trigger_periodic",
+      "type": "function",
+      "name": "domain.dashboard.trigger_periodic_queries"
+    },
+    {
+      "id": "fn_trigger_scenario_event",
+      "type": "function",
+      "name": "domain.dashboard.trigger_scenario_event"
+    },
+    {
+      "id": "grp_actuators_controls",
+      "type": "ui-group",
+      "name": "Actuators"
+    },
+    {
+      "id": "grp_all_devices",
+      "type": "ui-group",
+      "name": "Received devices"
+    },
+    {
+      "id": "grp_battery",
+      "type": "ui-group",
+      "name": "Battery and status"
+    },
+    {
+      "id": "grp_device_mapping",
+      "type": "ui-group",
+      "name": "Device mapping"
+    },
+    {
+      "id": "grp_device_references",
+      "type": "ui-group",
+      "name": "Device references"
+    },
+    {
+      "id": "grp_event_changes",
+      "type": "ui-group",
+      "name": "Last 5 status changes"
+    },
+    {
+      "id": "grp_periodic_filters",
+      "type": "ui-group",
+      "name": "Periodic filters"
+    },
+    {
+      "id": "grp_periodic_th",
+      "type": "ui-group",
+      "name": "Periodic metrics by device"
+    },
+    {
+      "id": "grp_scenarios",
+      "type": "ui-group",
+      "name": "Scenario"
+    },
+    {
+      "id": "inj_periodic_auto",
+      "type": "inject",
+      "name": "Auto refresh periodic"
+    },
+    {
+      "id": "inj_refresh_actuators",
+      "type": "inject",
+      "name": "Refresh actuator status"
+    },
+    {
+      "id": "inj_refresh_battery",
+      "type": "inject",
+      "name": "Refresh battery/status"
+    },
+    {
+      "id": "pg_actuator_status_query",
+      "type": "postgresql",
+      "name": "Query actuator status"
+    },
+    {
+      "id": "pg_actuators",
+      "type": "ui-page",
+      "name": "Actuators"
+    },
+    {
+      "id": "pg_all_devices",
+      "type": "ui-page",
+      "name": "All Devices"
+    },
+    {
+      "id": "pg_battery",
+      "type": "ui-page",
+      "name": "Battery & Status"
+    },
+    {
+      "id": "pg_device_mapping",
+      "type": "ui-page",
+      "name": "Device Mapping"
+    },
+    {
+      "id": "pg_device_references",
+      "type": "ui-page",
+      "name": "Device References"
+    },
+    {
+      "id": "pg_event_sensors",
+      "type": "ui-page",
+      "name": "Event Sensors"
+    },
+    {
+      "id": "pg_get_toggle_state",
+      "type": "postgresql",
+      "name": "Get actuator state for toggle"
+    },
+    {
+      "id": "pg_periodic",
+      "type": "ui-page",
+      "name": "Periodic Sensors"
+    },
+    {
+      "id": "pg_q_battery",
+      "type": "postgresql",
+      "name": "Query battery/status"
+    },
+    {
+      "id": "pg_q_periodic_th",
+      "type": "postgresql",
+      "name": "Query periodic metrics"
+    },
+    {
+      "id": "pg_q_scenario_bootstrap",
+      "type": "postgresql",
+      "name": "Query scenario bootstrap"
+    },
+    {
+      "id": "pg_scenarios",
+      "type": "ui-page",
+      "name": "Scenarios"
+    },
+    {
+      "id": "tpl_activity_interactive_style",
+      "type": "ui-template",
+      "name": "Interactive controls style"
+    },
+    {
+      "id": "tpl_actuator_controls_dynamic",
+      "type": "ui-template",
+      "name": "Actuator controls dynamic"
+    },
+    {
+      "id": "tpl_all_devices",
+      "type": "ui-template",
+      "name": "All devices list"
+    },
+    {
+      "id": "tpl_battery",
+      "type": "ui-template",
+      "name": "Battery and status view"
+    },
+    {
+      "id": "tpl_device_mapping",
+      "type": "ui-template",
+      "name": "Device mapping fields"
+    },
+    {
+      "id": "tpl_device_references",
+      "type": "ui-template",
+      "name": "Device references manager"
+    },
+    {
+      "id": "tpl_event_changes",
+      "type": "ui-template",
+      "name": "Event sensor changes view"
+    },
+    {
+      "id": "tpl_periodic_interactive_style",
+      "type": "ui-template",
+      "name": "Interactive controls style"
+    },
+    {
+      "id": "tpl_scenarios",
+      "type": "ui-template",
+      "name": "Scenario placeholder"
+    },
+    {
+      "id": "ui_base_2",
+      "type": "ui-base",
+      "name": "PoC Dashboard"
+    }
+  ],
+  "skipped_candidate_count": 9,
+  "skipped_candidates": [
+    {
+      "id": "40d558481cad3db6",
+      "type": "function",
+      "name": "domain.ingest.normalize_mqtt"
+    },
+    {
+      "id": "6934769a35a4061a",
+      "type": "mqtt out",
+      "name": "MQTT Out (commands)"
+    },
+    {
+      "id": "8350c63ee921963f",
+      "type": "tab",
+      "name": ""
+    },
+    {
+      "id": "bkr_mqtt_pg",
+      "type": "mqtt-broker",
+      "name": "Mosquitto (edit me)"
+    },
+    {
+      "id": "inj_refresh_all_devices",
+      "type": "inject",
+      "name": "Refresh all devices"
+    },
+    {
+      "id": "inj_refresh_events",
+      "type": "inject",
+      "name": "Refresh event sensors"
+    },
+    {
+      "id": "pg_all_devices_query",
+      "type": "postgresql",
+      "name": "Query all devices"
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)"
+    },
+    {
+      "id": "pg_event_changes_query",
+      "type": "postgresql",
+      "name": "Query event changes"
+    }
+  ],
+  "rules": {
+    "disable_types": [
+      "function",
+      "inject",
+      "postgresql",
+      "ui-base",
+      "ui-chart",
+      "ui-dropdown",
+      "ui-group",
+      "ui-page",
+      "ui-template",
+      "ui-theme"
+    ],
+    "dashboard_name_tokens": [
+      "dashboard",
+      "activity",
+      "battery",
+      "periodic",
+      "all_devices",
+      "actuator",
+      "event_changes",
+      "chart",
+      "scenario"
+    ]
+  }
+}

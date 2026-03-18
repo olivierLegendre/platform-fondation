@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "finding_count": 0,
+  "findings": [],
+  "checked": {
+    "mapping": "observability/metric-name-mapping.yaml",
+    "rules": "observability/prometheus/rules/wave6-critical-path-alerts.yaml",
+    "routing": "observability/alertmanager/wave6-alert-routing.yaml",
+    "healthy": "observability/examples/synthetic-metrics-healthy.json",
+    "breach": "observability/examples/synthetic-metrics-breach.json"
+  }
+}

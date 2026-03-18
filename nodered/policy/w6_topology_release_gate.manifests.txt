@@ -1,0 +1,10 @@
+# W6-10 topology release gate manifest set (production scaffold baseline)
+#
+# One absolute path per line. Lines starting with # are ignored.
+
+/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/reference-api.compose.yaml
+/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/device-ingestion.compose.yaml
+/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/channel-policy-router.compose.yaml
+/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/vault-secrets-runtime.compose.yaml
+
+# TODO(production-hardening): replace placeholder images/tags and add final runtime details.

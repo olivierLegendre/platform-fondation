@@ -1,0 +1,6 @@
+# format: service_repo|repo_dir|image_repo
+reference-api-service|reference-api-service|ghcr.io/olivierlegendre/reference-api-service
+device-ingestion-service|device-ingestion-service|ghcr.io/olivierlegendre/device-ingestion-service
+channel-policy-router|channel-policy-router|ghcr.io/olivierlegendre/channel-policy-router
+automation-scenario-service|automation-scenario-service|ghcr.io/olivierlegendre/automation-scenario-service
+operator-ui|operator-ui|ghcr.io/olivierlegendre/operator-ui

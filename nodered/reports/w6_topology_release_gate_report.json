@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "manifest_count": 4,
+  "checked_service_count": 5,
+  "finding_count": 0,
+  "findings": [],
+  "manifests": [
+    {
+      "manifest": "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/reference-api.compose.yaml",
+      "checked_service_count": 1,
+      "finding_count": 0,
+      "findings": []
+    },
+    {
+      "manifest": "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/device-ingestion.compose.yaml",
+      "checked_service_count": 1,
+      "finding_count": 0,
+      "findings": []
+    },
+    {
+      "manifest": "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/channel-policy-router.compose.yaml",
+      "checked_service_count": 1,
+      "finding_count": 0,
+      "findings": []
+    },
+    {
+      "manifest": "/home/olivier/work/iot_services/platform-foundation/deploy/production/compose/vault-secrets-runtime.compose.yaml",
+      "checked_service_count": 2,
+      "finding_count": 0,
+      "findings": []
+    }
+  ]
+}

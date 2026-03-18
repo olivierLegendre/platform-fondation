@@ -1,0 +1,31 @@
+{
+  "flows": "nodered/flows/poc_full_retirement_preview_tmp.json",
+  "policy": "nodered/policy/bridge_allowlist.json",
+  "total_nodes": 169,
+  "skipped_disabled_nodes": 146,
+  "include_disabled": false,
+  "violation_count": 21,
+  "violations": [
+    "pg_cfg_1: config/global node type 'postgreSQLConfig' not in allowlist",
+    "inj_refresh_all_devices: runtime node type 'inject' not in allowlist",
+    "pg_all_devices_query: forbidden runtime node type 'postgresql'",
+    "inj_refresh_events: runtime node type 'inject' not in allowlist",
+    "pg_event_changes_query: forbidden runtime node type 'postgresql'",
+    "domain_extract_all_fields: forbidden runtime node type 'function'",
+    "domain_extract_all_fields: node name 'domain.mapping.extract_all_fields' uses forbidden prefix 'domain.'",
+    "repo_build_candidate_upsert: forbidden runtime node type 'function'",
+    "repo_build_candidate_upsert: node name 'repo.device_mapping_candidate.build_upsert_query' uses forbidden prefix 'repo.'",
+    "repo_exec_candidate_upsert: forbidden runtime node type 'postgresql'",
+    "repo_exec_candidate_upsert: node name 'repo.device_mapping_candidate.execute_upsert' uses forbidden prefix 'repo.'",
+    "repo_metrics_build_mapping_lookup: forbidden runtime node type 'function'",
+    "repo_metrics_build_mapping_lookup: node name 'repo.metrics.build_mapping_lookup_query' uses forbidden prefix 'repo.'",
+    "repo_metrics_execute_mapping_lookup: forbidden runtime node type 'postgresql'",
+    "repo_metrics_execute_mapping_lookup: node name 'repo.metrics.execute_mapping_lookup' uses forbidden prefix 'repo.'",
+    "domain_metrics_apply_mappings: forbidden runtime node type 'function'",
+    "domain_metrics_apply_mappings: node name 'domain.metrics.apply_mappings' uses forbidden prefix 'domain.'",
+    "repo_metrics_build_insert_query: forbidden runtime node type 'function'",
+    "repo_metrics_build_insert_query: node name 'repo.metrics.build_insert_query' uses forbidden prefix 'repo.'",
+    "repo_metrics_execute_insert: forbidden runtime node type 'postgresql'",
+    "repo_metrics_execute_insert: node name 'repo.metrics.execute_insert' uses forbidden prefix 'repo.'"
+  ]
+}

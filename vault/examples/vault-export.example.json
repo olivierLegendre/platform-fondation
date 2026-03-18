@@ -1,0 +1,12 @@
+{
+  "automation-scenario-service": {
+    "AUTH_JWT_SECRET": "replace-me-with-at-least-32-characters",
+    "AUTH_JWT_ISSUER": "https://idp.example/realms/iot",
+    "AUTH_JWT_AUDIENCE": "iot-platform"
+  },
+  "channel-policy-router": {
+    "AUTH_JWT_SECRET": "replace-me-with-at-least-32-characters",
+    "AUTH_JWT_ISSUER": "https://idp.example/realms/iot",
+    "AUTH_JWT_AUDIENCE": "iot-platform"
+  }
+}

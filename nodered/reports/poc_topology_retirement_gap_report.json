@@ -1,0 +1,37 @@
+{
+  "status": "FAIL",
+  "manifest_count": 1,
+  "checked_service_count": 8,
+  "finding_count": 2,
+  "findings": [
+    {
+      "manifest": "/home/olivier/Public/poc/stack/docker-compose.yml",
+      "service": "nodered",
+      "reason": "service_name_contains_nodered"
+    },
+    {
+      "manifest": "/home/olivier/Public/poc/stack/docker-compose.yml",
+      "service": "nodered",
+      "reason": "container_name_contains_nodered"
+    }
+  ],
+  "manifests": [
+    {
+      "manifest": "/home/olivier/Public/poc/stack/docker-compose.yml",
+      "checked_service_count": 8,
+      "finding_count": 2,
+      "findings": [
+        {
+          "manifest": "/home/olivier/Public/poc/stack/docker-compose.yml",
+          "service": "nodered",
+          "reason": "service_name_contains_nodered"
+        },
+        {
+          "manifest": "/home/olivier/Public/poc/stack/docker-compose.yml",
+          "service": "nodered",
+          "reason": "container_name_contains_nodered"
+        }
+      ]
+    }
+  ]
+}

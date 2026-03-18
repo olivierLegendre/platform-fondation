@@ -1,0 +1,9 @@
+{
+  "flows": "nodered/flows/poc_retirement_cutover_preview.json",
+  "policy": "nodered/policy/bridge_allowlist.json",
+  "total_nodes": 145,
+  "skipped_disabled_nodes": 134,
+  "include_disabled": false,
+  "violation_count": 0,
+  "violations": []
+}

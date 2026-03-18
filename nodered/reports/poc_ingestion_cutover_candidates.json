@@ -1,0 +1,185 @@
+{
+  "flows": "/home/olivier/Public/poc/stack/nodered/data/flows.json",
+  "seed_count": 5,
+  "candidate_count": 22,
+  "candidate_type_counts": {
+    "debug": 2,
+    "function": 10,
+    "mqtt in": 1,
+    "mqtt-broker": 1,
+    "postgreSQLConfig": 1,
+    "postgresql": 2,
+    "tab": 1,
+    "ui-chart": 1,
+    "ui-group": 2,
+    "ui-template": 1
+  },
+  "seed_rule": {
+    "mqtt_in_topics": [
+      "application/+/device/+/event/up",
+      "zigbee2mqtt/#"
+    ],
+    "function_name_prefix": "domain.ingest.",
+    "function_name_exact": [
+      "repo.devices.build_upsert_query",
+      "repo.telemetry.build_insert_raw_query"
+    ],
+    "neighbor_hops": 2
+  },
+  "candidates": [
+    {
+      "id": "014f2b8fe99b97fe",
+      "type": "function",
+      "name": "repo.telemetry.build_insert_raw_query",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "01541a7a87ea3f4d",
+      "type": "debug",
+      "name": "DB insert result",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "1e28fb88cb6b4b16",
+      "type": "postgresql",
+      "name": "repo.telemetry.execute_insert_raw",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "281e164c860e96ee",
+      "type": "function",
+      "name": "repo.devices.build_upsert_query",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "40d558481cad3db6",
+      "type": "function",
+      "name": "domain.ingest.normalize_mqtt",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "73686f037df2c0ae",
+      "type": "ui-group",
+      "name": "Activity (Live)",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "77fd592477b6cdab",
+      "type": "mqtt in",
+      "name": "MQTT In (Zigbee2MQTT)",
+      "topic": "zigbee2mqtt/#",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "7c0990bcbebdeaad",
+      "type": "postgresql",
+      "name": "repo.devices.execute_upsert",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "8350c63ee921963f",
+      "type": "tab",
+      "name": "",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "a6fe0b1eaf258827",
+      "type": "function",
+      "name": "domain.ingest.parse_json_zigbee_tolerant",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "af4eab925dd532d1",
+      "type": "debug",
+      "name": "Debug (envelope)",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "baa340c8c171b714",
+      "type": "ui-chart",
+      "name": "Activity histogram",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "bkr_mqtt_pg",
+      "type": "mqtt-broker",
+      "name": "Mosquitto (edit me)",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "c4a7252d6e8f4b11",
+      "type": "function",
+      "name": "domain.dashboard.capture_scenario_values",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "cfdf5de51b5addff",
+      "type": "function",
+      "name": "domain.dashboard.update_activity_histogram",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "domain_extract_all_fields",
+      "type": "function",
+      "name": "domain.mapping.extract_all_fields",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "fn_trigger_scenario_event",
+      "type": "function",
+      "name": "domain.dashboard.trigger_scenario_event",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "grp_scenarios",
+      "type": "ui-group",
+      "name": "Scenario",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "pg_cfg_1",
+      "type": "postgreSQLConfig",
+      "name": "postgres (edit me)",
+      "topic": "",
+      "tab": ""
+    },
+    {
+      "id": "repo_build_candidate_upsert",
+      "type": "function",
+      "name": "repo.device_mapping_candidate.build_upsert_query",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "repo_metrics_build_mapping_lookup",
+      "type": "function",
+      "name": "repo.metrics.build_mapping_lookup_query",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    },
+    {
+      "id": "tpl_scenarios",
+      "type": "ui-template",
+      "name": "Scenario placeholder",
+      "topic": "",
+      "tab": "8350c63ee921963f"
+    }
+  ]
+}

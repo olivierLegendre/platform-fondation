@@ -1,0 +1,54 @@
+{
+  "policy_name": "nodered_bridge_only_v1",
+  "description": "Bridge-only policy for Node-RED during Wave 6 migration. No business/domain, SQL, dashboard, or scenario logic is allowed.",
+  "allowed_runtime_node_types": [
+    "mqtt in",
+    "mqtt out",
+    "json",
+    "change",
+    "switch",
+    "rbe",
+    "delay",
+    "link in",
+    "link out",
+    "catch",
+    "status",
+    "debug",
+    "comment",
+    "junction"
+  ],
+  "allowed_config_node_types": [
+    "tab",
+    "mqtt-broker"
+  ],
+  "forbidden_runtime_node_types": [
+    "function",
+    "postgresql",
+    "http in",
+    "http response",
+    "ui-base",
+    "ui-page",
+    "ui-group",
+    "ui-template",
+    "ui-chart",
+    "ui-dropdown",
+    "ui-theme"
+  ],
+  "forbidden_name_prefixes": [
+    "domain.",
+    "repo.",
+    "api_"
+  ],
+  "forbidden_name_contains": [
+    "scenario",
+    "dashboard"
+  ],
+  "allowed_mqtt_in_topic_patterns": [
+    "^zigbee2mqtt/.+/(availability|state)$",
+    "^application/.+/event/.+$",
+    "^lorawan/.+$"
+  ],
+  "allowed_mqtt_out_topic_patterns": [
+    "^bridge/legacy/.+$"
+  ]
+}

@@ -1,0 +1,7 @@
+services:
+  channel-policy-router:
+    image: ghcr.io/olivierlegendre/channel-policy-router:v0.1.0
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      SERVICE_NAME: channel-policy-router

@@ -1,0 +1,20 @@
+name: nodered-bridge-policy-gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  enforce-bridge-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enforce Node-RED bridge-only policy
+        run: |
+          ./nodered/scripts/run_bridge_policy_gate.sh \
+            nodered/flows/bridge_only_template.json \
+            nodered/policy/bridge_allowlist.json \
+            nodered/reports/bridge_policy_gate_report.json

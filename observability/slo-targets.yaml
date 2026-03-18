@@ -1,0 +1,43 @@
+version: 1
+owner: platform-foundation
+scope: wave6-critical-paths
+
+slos:
+  - id: ingest_api_availability
+    service: device-ingestion-service
+    indicator: http_availability
+    target: 99.9
+    window: 30d
+    notes: Health and ingest endpoints should stay available for command and telemetry continuity.
+
+  - id: reference_api_availability
+    service: reference-api-service
+    indicator: http_availability
+    target: 99.9
+    window: 30d
+
+  - id: command_router_dispatch_latency_p95
+    service: channel-policy-router
+    indicator: dispatch_latency_p95_seconds
+    target: 2.0
+    window: 5m
+    notes: Alert on sustained routing latency threatening command reconciliation SLA.
+
+  - id: command_router_queue_depth
+    service: channel-policy-router
+    indicator: queue_depth
+    target: 200
+    window: instant
+    notes: Guardrail before hard reject threshold.
+
+  - id: command_router_sla_breach_rate
+    service: channel-policy-router
+    indicator: reconciliation_sla_breach_ratio
+    target: 0.01
+    window: 15m
+
+  - id: automation_workflow_start_latency_p95
+    service: automation-scenario-service
+    indicator: workflow_start_latency_p95_seconds
+    target: 5.0
+    window: 5m
