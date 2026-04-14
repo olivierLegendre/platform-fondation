@@ -5,7 +5,7 @@ This directory hosts the production topology manifest set used by the Wave 6 ret
 Current status:
 - scaffolded baseline for service topology checks;
 - Node-RED intentionally absent from all manifests;
-- image tags and runtime details are placeholders and must be replaced before real deployment.
+- release baseline is pinned to verified `v0.2.0` images in `ghcr.io/olivierlegendre/...`;
 - Wave 8 namespace migration baseline applied for `ghcr.io/olivierlegendre/...`.
 - shared PostgreSQL ownership is managed here (cluster lifecycle, provisioning, and DB operations policy).
 
@@ -89,12 +89,12 @@ ALLOW_DESTRUCTIVE_VOLUME_DELETE=true ./deploy/production/scripts/run_shared_post
 
 ### Backup and restore status
 
-Backup/restore implementation is foundation-owned and tracked as a TODO item.
+Backup/restore implementation is foundation-owned and tracked as a deferred operational work item.
 Service teams must provide restore-validation evidence at application level once operational backup pipelines are in place.
 
 ## Before go-live
 
-1. Replace placeholder images/tags with real production artifacts.
+1. Promote verified immutable tags from GHCR publish proof artifacts to the target environment release manifest.
 2. Add real networking, secrets injection, and health checks.
 3. Validate the same manifest set in CI/CD release pipeline.
 
