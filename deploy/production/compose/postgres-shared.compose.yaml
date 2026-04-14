@@ -1,6 +1,6 @@
 services:
   postgres-shared:
-    image: postgres:16
+    image: postgres:18
     container_name: platform-foundation-postgres
     restart: unless-stopped
     environment:
@@ -15,7 +15,7 @@ services:
       timeout: 5s
       retries: 20
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
 
 volumes:
   postgres_data:
