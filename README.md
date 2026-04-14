@@ -18,7 +18,7 @@ Repository for shared runtime and platform-level operational controls.
 
 See:
 
-- `nodered/README.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/README.md`
 - `nodered/policy/bridge_allowlist.json`
 - `nodered/scripts/audit_bridge_policy.py`
 - `nodered/reports/poc_bridge_policy_report.json`
@@ -28,33 +28,33 @@ See:
 - `nodered/reports/poc_ingestion_cutover_actions.json`
 - `nodered/flows/poc_ingestion_cutover_preview.json`
 - `nodered/reports/poc_ingestion_cutover_bridge_audit.json`
-- `nodered/ingestion-cutover.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/ingestion-cutover.md`
 - `nodered/scripts/extract_reference_api_cutover_candidates.py`
 - `nodered/scripts/apply_reference_api_cutover.py`
 - `nodered/reports/poc_reference_api_cutover_candidates.json`
 - `nodered/reports/poc_reference_api_cutover_actions.json`
 - `nodered/flows/poc_reference_api_cutover_preview.json`
 - `nodered/reports/poc_reference_api_cutover_bridge_audit.json`
-- `nodered/reference-api-cutover.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/reference-api-cutover.md`
 - `nodered/scripts/extract_scenario_router_cutover_candidates.py`
 - `nodered/scripts/apply_scenario_router_cutover.py`
 - `nodered/reports/poc_scenario_router_cutover_candidates.json`
 - `nodered/reports/poc_scenario_router_cutover_actions.json`
 - `nodered/flows/poc_scenario_router_cutover_preview.json`
 - `nodered/reports/poc_scenario_router_cutover_bridge_audit.json`
-- `nodered/scenario-router-cutover.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/scenario-router-cutover.md`
 - `nodered/scripts/extract_dashboard_cutover_candidates.py`
 - `nodered/scripts/apply_dashboard_cutover.py`
 - `nodered/reports/poc_dashboard_cutover_candidates.json`
 - `nodered/reports/poc_dashboard_cutover_actions.json`
 - `nodered/flows/poc_dashboard_cutover_preview.json`
 - `nodered/reports/poc_dashboard_cutover_bridge_audit.json`
-- `nodered/dashboard-cutover.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/dashboard-cutover.md`
 - `nodered/scripts/apply_retirement_cutover.py`
 - `nodered/flows/poc_retirement_cutover_preview.json`
 - `nodered/reports/poc_retirement_cutover_actions.json`
 - `nodered/reports/poc_retirement_cutover_bridge_audit.json`
-- `nodered/retirement-cutover.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/retirement-cutover.md`
 - `nodered/scripts/verify_nodered_topology_retired.py`
 - `nodered/reports/w6_topology_retirement_verification.json`
 - `nodered/reports/poc_topology_retirement_gap_report.json`
@@ -63,7 +63,7 @@ See:
 - `nodered/reports/w6_topology_release_gate_report.json`
 - `nodered/scripts/evaluate_w6_retirement_readiness.py`
 - `nodered/reports/w6_retirement_readiness_report.json`
-- `nodered/topology-retirement-check.md`
+- `../plateform-meta-iot/docs/project-monitoring/services/platform-foundation/nodered/topology-retirement-check.md`
 - `vault/README.md`
 - `vault/secrets-contract.yaml`
 - `vault/scripts/render_runtime_env.py`

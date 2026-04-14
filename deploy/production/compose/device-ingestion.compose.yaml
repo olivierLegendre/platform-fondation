@@ -5,3 +5,5 @@ services:
     environment:
       APP_ENV: production
       SERVICE_NAME: device-ingestion-service
+      DEVICE_INGESTION_PERSISTENCE_BACKEND: postgres
+      DEVICE_INGESTION_POSTGRES_DSN: ${DEVICE_INGESTION_POSTGRES_DSN:?set via vault-rendered runtime env}

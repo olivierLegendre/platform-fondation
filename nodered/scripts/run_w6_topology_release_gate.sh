@@ -2,6 +2,13 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  PYTHON_BIN="$PYTHON_BIN"
+elif [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+else
+  PYTHON_BIN="python3"
+fi
 MANIFEST_SET="${1:-$ROOT_DIR/nodered/policy/w6_topology_release_gate.manifests.txt}"
 OUT_REPORT="${2:-$ROOT_DIR/nodered/reports/w6_topology_release_gate_report.json}"
 
@@ -23,7 +30,7 @@ for manifest in "${MANIFESTS[@]}"; do
   fi
 done
 
-CMD=(python3 "$ROOT_DIR/nodered/scripts/verify_nodered_topology_retired.py")
+CMD=("$PYTHON_BIN" "$ROOT_DIR/nodered/scripts/verify_nodered_topology_retired.py")
 for manifest in "${MANIFESTS[@]}"; do
   CMD+=(--manifest "$manifest")
 done

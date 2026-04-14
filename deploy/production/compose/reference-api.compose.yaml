@@ -5,3 +5,5 @@ services:
     environment:
       APP_ENV: production
       SERVICE_NAME: reference-api-service
+      REFERENCE_API_PERSISTENCE_BACKEND: postgres
+      REFERENCE_API_POSTGRES_DSN: ${REFERENCE_API_POSTGRES_DSN:?set via vault-rendered runtime env}

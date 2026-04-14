@@ -3,17 +3,24 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT_DIR"
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  PYTHON_BIN="$PYTHON_BIN"
+elif [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+else
+  PYTHON_BIN="python3"
+fi
 
 WIRING_REPORT="${WIRING_REPORT:-observability/reports/w1-observability-wiring-verification.json}"
 FINAL_REPORT="${FINAL_REPORT:-observability/reports/w1-observability-baseline-report.json}"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-python3 -m py_compile \
+"$PYTHON_BIN" -m py_compile \
   observability/scripts/verify_wave6_observability.py \
   observability/scripts/run_synthetic_alert_checks.py
 
-if python3 observability/scripts/verify_wave6_observability.py \
+if "$PYTHON_BIN" observability/scripts/verify_wave6_observability.py \
   --mapping observability/metric-name-mapping.yaml \
   --rules observability/prometheus/rules/wave6-critical-path-alerts.yaml \
   --routing observability/alertmanager/wave6-alert-routing.yaml \
@@ -25,21 +32,21 @@ else
   wiring_status="FAIL"
 fi
 
-if python3 observability/scripts/run_synthetic_alert_checks.py \
+if "$PYTHON_BIN" observability/scripts/run_synthetic_alert_checks.py \
   --input observability/examples/synthetic-metrics-healthy.json >"$TMP_DIR/healthy.log" 2>&1; then
   healthy_status="PASS"
 else
   healthy_status="FAIL"
 fi
 
-if python3 observability/scripts/run_synthetic_alert_checks.py \
+if "$PYTHON_BIN" observability/scripts/run_synthetic_alert_checks.py \
   --input observability/examples/synthetic-metrics-breach.json >"$TMP_DIR/breach.log" 2>&1; then
   breach_expected_fail="FAIL"
 else
   breach_expected_fail="PASS"
 fi
 
-python3 - "$FINAL_REPORT" "$WIRING_REPORT" "$TMP_DIR" "$wiring_status" "$healthy_status" "$breach_expected_fail" <<'PY'
+"$PYTHON_BIN" - "$FINAL_REPORT" "$WIRING_REPORT" "$TMP_DIR" "$wiring_status" "$healthy_status" "$breach_expected_fail" <<'PY'
 from __future__ import annotations
 
 import json
@@ -100,7 +107,7 @@ if [[ ! -f "$FINAL_REPORT" ]]; then
   exit 1
 fi
 
-if ! python3 - "$FINAL_REPORT" <<'PY'
+if ! "$PYTHON_BIN" - "$FINAL_REPORT" <<'PY'
 from __future__ import annotations
 import json
 import sys

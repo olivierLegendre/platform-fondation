@@ -4,6 +4,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRODUCTION_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 PLATFORM_FOUNDATION_ROOT="$(cd "${PRODUCTION_DIR}/../.." && pwd)"
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  PYTHON_BIN="$PYTHON_BIN"
+elif [[ -x "$PLATFORM_FOUNDATION_ROOT/.venv/bin/python" ]]; then
+  PYTHON_BIN="$PLATFORM_FOUNDATION_ROOT/.venv/bin/python"
+else
+  PYTHON_BIN="python3"
+fi
 
 MANIFEST_FILE="${MANIFEST_FILE:-${PRODUCTION_DIR}/ghcr-service-images.manifest}"
 TOPOLOGY_REPORT="${TOPOLOGY_REPORT:-${PLATFORM_FOUNDATION_ROOT}/nodered/reports/w6_topology_release_gate_report.json}"
@@ -34,8 +41,8 @@ JSON
   fi
 fi
 
-"${PLATFORM_FOUNDATION_ROOT}/nodered/scripts/run_w6_topology_release_gate.sh"
-python3 "${PLATFORM_FOUNDATION_ROOT}/nodered/scripts/evaluate_w6_retirement_readiness.py" \
+PYTHON_BIN="$PYTHON_BIN" "${PLATFORM_FOUNDATION_ROOT}/nodered/scripts/run_w6_topology_release_gate.sh"
+"$PYTHON_BIN" "${PLATFORM_FOUNDATION_ROOT}/nodered/scripts/evaluate_w6_retirement_readiness.py" \
   --managed "${TOPOLOGY_REPORT}" \
   --legacy "${PLATFORM_FOUNDATION_ROOT}/nodered/reports/poc_topology_retirement_gap_report.json" \
   --manifest-set "${PLATFORM_FOUNDATION_ROOT}/nodered/policy/w6_topology_release_gate.manifests.txt" \
@@ -56,6 +63,6 @@ if [[ -f "${PULLABILITY_REPORT}" ]]; then
   EVAL_ARGS+=(--pullability "${PULLABILITY_REPORT}")
 fi
 
-python3 "${SCRIPT_DIR}/evaluate_wave8_namespace_readiness.py" "${EVAL_ARGS[@]}"
+"$PYTHON_BIN" "${SCRIPT_DIR}/evaluate_wave8_namespace_readiness.py" "${EVAL_ARGS[@]}"
 
 echo "wrote report: ${OUT_REPORT}"

@@ -2,6 +2,13 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+if [[ -n "${PYTHON_BIN:-}" ]]; then
+  PYTHON_BIN="$PYTHON_BIN"
+elif [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+  PYTHON_BIN="$ROOT_DIR/.venv/bin/python"
+else
+  PYTHON_BIN="python3"
+fi
 
 FLOWS_PATH="${1:-${NODERED_FLOWS_PATH:-/home/olivier/Public/poc/stack/nodered/data/flows.json}}"
 POLICY_PATH="${2:-${NODERED_BRIDGE_POLICY_PATH:-$ROOT_DIR/nodered/policy/bridge_allowlist.json}}"
@@ -17,7 +24,7 @@ if [[ ! -f "$POLICY_PATH" ]]; then
   exit 2
 fi
 
-python3 "$ROOT_DIR/nodered/scripts/audit_bridge_policy.py" \
+"$PYTHON_BIN" "$ROOT_DIR/nodered/scripts/audit_bridge_policy.py" \
   --flows "$FLOWS_PATH" \
   --policy "$POLICY_PATH" \
   --report "$REPORT_PATH" \
