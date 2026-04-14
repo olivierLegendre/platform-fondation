@@ -20,3 +20,8 @@ deploy/production/scripts/ghcr-push.env
 node_modules/
 .next/
 dist/
+
+# Python packaging artifacts
+*.egg-info/
+*.egg
+.eggs/
