@@ -3,6 +3,14 @@
   "finding_count": 0,
   "findings": [],
   "services": {
+    "reference-api-service": {
+      "env_file": "/tmp/iot-wave1-secrets/reference-api-service.env",
+      "present": true,
+      "required_keys": [
+        "REFERENCE_API_POSTGRES_DSN"
+      ],
+      "missing_keys": []
+    },
     "automation-scenario-service": {
       "env_file": "/tmp/iot-wave1-secrets/automation-scenario-service.env",
       "present": true,

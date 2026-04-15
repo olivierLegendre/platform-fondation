@@ -9,12 +9,15 @@ Services must not keep real secrets in git, image layers, or static `.env` files
 
 In this project, Vault provides values for:
 
+- `REFERENCE_API_POSTGRES_DSN`
+
 - `AUTH_JWT_SECRET`
 - `AUTH_JWT_ISSUER`
 - `AUTH_JWT_AUDIENCE`
 
 for:
 
+- `reference-api-service`
 - `automation-scenario-service`
 - `channel-policy-router`
 
@@ -34,12 +37,14 @@ The secret names and required keys are defined in `secrets-contract.yaml`.
 
 4. Bootstrap render step (if using compatibility mode):
 - `render_runtime_env.py` converts Vault-shaped JSON to:
+  - `/run/iot-secrets/reference-api-service.env`
   - `/run/iot-secrets/automation-scenario-service.env`
   - `/run/iot-secrets/channel-policy-router.env`
 
 5. Validation gate:
 - `validate_runtime_env.py` checks:
   - required keys exist
+  - DSN format and dev-default rejection for `reference-api-service`
   - default dev JWT secret is rejected
   - JWT secret length policy (>= 32 chars)
 

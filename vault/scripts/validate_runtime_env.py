@@ -6,6 +6,9 @@ from pathlib import Path
 
 DEFAULT_DEV_SECRET = "dev-wave6-change-me-32-byte-minimum-key"
 REQUIRED_BY_SERVICE: dict[str, tuple[str, ...]] = {
+    "reference-api-service": (
+        "REFERENCE_API_POSTGRES_DSN",
+    ),
     "automation-scenario-service": (
         "AUTH_JWT_SECRET",
         "AUTH_JWT_ISSUER",
@@ -17,6 +20,7 @@ REQUIRED_BY_SERVICE: dict[str, tuple[str, ...]] = {
         "AUTH_JWT_AUDIENCE",
     ),
 }
+FORBIDDEN_REFERENCE_API_DSN = "postgresql://postgres:postgres@localhost:5432/reference_api"
 
 
 def parse_env_file(path: Path) -> dict[str, str]:
@@ -46,6 +50,17 @@ def validate_service_env(path: Path, service: str) -> list[str]:
     for key in required:
         if not data.get(key):
             errors.append(f"{service}: missing required key {key}")
+
+    if service == "reference-api-service":
+        dsn = data.get("REFERENCE_API_POSTGRES_DSN", "")
+        if dsn and not dsn.startswith("postgresql://"):
+            errors.append(
+                f"{service}: REFERENCE_API_POSTGRES_DSN must start with postgresql://"
+            )
+        if dsn == FORBIDDEN_REFERENCE_API_DSN:
+            errors.append(
+                f"{service}: REFERENCE_API_POSTGRES_DSN uses forbidden local dev default"
+            )
 
     jwt_secret = data.get("AUTH_JWT_SECRET", "")
     if jwt_secret == DEFAULT_DEV_SECRET:

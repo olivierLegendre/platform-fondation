@@ -6,6 +6,9 @@ import json
 from pathlib import Path
 
 REQUIRED_BY_SERVICE: dict[str, tuple[str, ...]] = {
+    "reference-api-service": (
+        "REFERENCE_API_POSTGRES_DSN",
+    ),
     "automation-scenario-service": (
         "AUTH_JWT_SECRET",
         "AUTH_JWT_ISSUER",
