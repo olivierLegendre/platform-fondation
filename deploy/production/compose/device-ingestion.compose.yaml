@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     environment:
       APP_ENV: production
+      DEVICE_INGESTION_APP_ENV: production
       SERVICE_NAME: device-ingestion-service
       DEVICE_INGESTION_PERSISTENCE_BACKEND: postgres
+      DEVICE_INGESTION_POSTGRES_AUTO_INIT: "false"
       DEVICE_INGESTION_POSTGRES_DSN: ${DEVICE_INGESTION_POSTGRES_DSN:?set via vault-rendered runtime env}

@@ -4,6 +4,8 @@ services:
     restart: unless-stopped
     environment:
       APP_ENV: production
+      CHANNEL_POLICY_ROUTER_APP_ENV: production
       SERVICE_NAME: channel-policy-router
       CHANNEL_POLICY_ROUTER_PERSISTENCE_BACKEND: postgres
+      CHANNEL_POLICY_ROUTER_POSTGRES_AUTO_INIT: "false"
       CHANNEL_POLICY_ROUTER_POSTGRES_DSN: ${CHANNEL_POLICY_ROUTER_POSTGRES_DSN:?set via vault-rendered runtime env}
